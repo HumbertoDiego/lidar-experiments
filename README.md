@@ -33,7 +33,7 @@ Requirements:
 
 ### SSH connection to Raspberry pi
 
-With this Ubiquity image, the wifi adapter of the Raspberry Pi acts as an Access Point, so we just need to enter `ubiquityrobotXXXX` network, where XXXX XXXX is part of the MAC address. The password is `robotseverywhere`. The sudo username is `ubuntu` with password `ubuntu`. 
+With this Ubiquity image, the wifi adapter of the Raspberry Pi acts as an Access Point, so we just need to enter `ubiquityrobotXXXX` network, where XXXX is part of the MAC address. The password is `robotseverywhere`. The sudo username is `ubuntu` with password `ubuntu`. 
 
 In this network, just run on a shell:
 
@@ -41,7 +41,7 @@ In this network, just run on a shell:
 ssh ubuntu@10.42.0.1
 ```
 
-Enter the `ubuntu` as password to get the the shell. We can check all IP addresses with:
+Enter the `ubuntu` password to get the the shell. We can check all IP addresses with:
 
 ```shell
 ubuntu@ubiquityrobot:~$ ip a | grep "inet "
@@ -50,7 +50,7 @@ ubuntu@ubiquityrobot:~$ ip a | grep "inet "
     inet 10.42.0.1/24 brd 10.42.0.255 scope global noprefixroute wlan0
 ```
 
-Now you can disconnect from `ubiquityrobotXXXX` network, connect back to your own router network and SSH again with this other IP received by Raspberry from your router, in this case:
+Now you can disconnect from `ubiquityrobotXXXX` network, connect back to your own router network to continue accessing internet and SSH again with this other IP received by Raspberry from your router, in this case:
 
 ```shell
 ssh ubuntu@192.168.1.20
@@ -75,7 +75,7 @@ network:
 
 ### Check LiDAR USB port
 
-Plug and unplug the LiDar from USB port to check if the device is been recognized. In general, when plugged it starts spinning.
+Plug and unplug the LiDAR from USB port to check if the device is been recognized. In general, when plugged it starts spinning.
 
 ```shell
 ubuntu@ubiquityrobot:~$ lsusb
@@ -83,7 +83,7 @@ Bus 001 Device 005: ID 1a86:55d4 QinHeng Electronics
 ...
 ```
 
-We also need to know which the device name it's been using in Linux device folder. For this, generate a file with the list of devices before and after pluggin the Lidar. 
+We also need to know the device full path name. For this, generate a file with the list of devices before and after pluggin the LiDAR. 
 
 ```shell
 # Unplug Device
@@ -101,6 +101,8 @@ ubuntu@ubiquityrobot:~$ diff withlidar nolidar
 So, in this case, the device full path is `/dev/ttyACM0`.
 
 ### Install manufacturers drivers
+
+Another good thing about this Ubiquity image is that it already comes with ROS Noetic pre installed. Ros is a publisher/subscriber system to enable communication with various manufactures devices.
 
 ```shell
 ubuntu@ubiquityrobot:~$ 
@@ -121,7 +123,7 @@ cd ~/ldlidar_ros_ws && source devel/setup.bash
 echo "source ~/ldlidar_ros_ws/devel/setup.bash" >> ~/.bashrc
 ```
 
-from now on you can run the publisher just by:
+From now on you can run the publisher just by:
 
 ```shell
 ubuntu@ubiquityrobot:~$ roslaunch ldlidar_sl_ros ld14p.launch
