@@ -1,9 +1,9 @@
-# ld14p-experiments
-Learning Path for LD14p LiDAR and its possibilities in conjunction with another sensors
+# LiDAR-experiments
+Learning Path for LiDAR usage and its possibilities in conjunction with another sensors
 
 ## Summary
 
-* [1. LD14P Presentation](#section-1)
+* [1. Lidar 360º - LD14P Presentation](#section-1)
 * [2. Installation and run the ROS publisher via USB](#section-2)
 * [3. Instalation in Raspberry via GPIO](#section-3)
 * [4. Get data with ROS subscriber](#section-4)
@@ -11,7 +11,7 @@ Learning Path for LD14p LiDAR and its possibilities in conjunction with another 
 * [6. Combining with inertial sensor](#section-6)
 
 
-## <a name="section-1"></a> 1. LD14P Presentation
+## <a name="section-1"></a> 1. Lidar 360º - LD14P Presentation
 
 <img src='imgs/OIP.jpeg'>
 
