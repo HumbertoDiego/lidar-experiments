@@ -3,11 +3,11 @@ Learning Path for LD14p LiDAR and its possibilities in conjunction with another 
 
 ## Summary
 
-### [1. LD14P Presentation](#section-1)
-### 2. Installation and run the ROS publisher via USB
-### 3. Instalation in Raspberry via GPIO
-### 4. ROS subscriber
-### 5. Rviz
+* [1. LD14P Presentation](#section-1)
+* 2. Installation and run the ROS publisher via USB
+* 3. Instalation in Raspberry via GPIO
+* 4. ROS subscriber
+* 5. Rviz
 
 
 ## <a name="section-1"></a> 1. LD14P Presentation
