@@ -21,6 +21,8 @@ The LD14P claims it's a short distance 360º LiDAR, whith 2-8Hz(default 6Hz), mi
 
 ## <a name="section-2"></a> 2. Installation and run the ROS publisher via USB
 
+<img src='imgs/setup-01.jpeg'>
+
 ## <a name="section-3"></a> 3. Instalation in Raspberry via GPIO
 
 ## <a name="section-4"></a> 4. Get data with ROS subscriber
