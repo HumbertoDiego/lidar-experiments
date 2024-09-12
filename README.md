@@ -17,7 +17,7 @@ Learning Path for LiDAR usage and its possibilities in conjunction with another 
 
 There are a lot of RPLIDAR out there, in general you will have to follow the manufacturer instructions to have it running. Some times, some instructions are the same for different RPLIDARs. 
 
-### Specs:
+The LD14P claims it's a short distance 360º LiDAR, whith 2-8Hz(default 6Hz), minimum measure distance of 0.1m, range of 6-8m dependig on if its black or white, support for ROS1, ROS2, Python routines that run on Ubuntu and Windows.
 
 ## <a name="section-2"></a> 2. Installation and run the ROS publisher via USB
 
