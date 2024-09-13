@@ -81,6 +81,8 @@ network:
                 addresses: [8.8.8.8,1.1.1.1]
 ```
 
+If you know that the LiDAR will be used allways in the same wifi network, you could just connect to it at start up. Change the network adapter name in the file above and run `ubuntu@ubiquityrobot:~$ sudo pifi add <NETWORK-SSID> <NETWORK-PASSWD>`.
+
 ### Check LiDAR USB port
 
 Plug and unplug the LiDAR from USB port to check if the device is been recognized. In general, when plugged it starts spinning.
