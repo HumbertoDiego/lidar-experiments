@@ -306,9 +306,9 @@ Press Ctrl+c to stop the messages.
 
 #### <a name="section-331"> Direct on Windows 11
 
-When under Windows, it is necessary to install the serial port driver of the USB adapter board. The apdapter name is CP2102 and its driver can be obtained from Silicon Labs' official website:  [CP210x_Universal_Windows_Driver](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers). Don't worry if you don't find it there, there is another copy [here](https://github.com/HumbertoDiego/lidar-experiments/tree/main/manuals) and [here](https://github.com/ldrobotSensorTeam/ld_desktop_tool/releases/tag/V2.3.13) or just run Windows Update to find the driver. However, there is no SDK for Windows 7 and on, MacOS or Linux. 
-
-They offers a nice visualization tool called [LdsPointCloudViewer-v3.0.6](https://github.com/ldrobotSensorTeam/ld_desktop_tool/releases).
+Requirements
+ * When under Windows, it is necessary to install the serial port driver of the USB adapter board. The apdapter name is CP2102 and its driver can be obtained from Silicon Labs' official website:  [CP210x_Universal_Windows_Driver](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers). Don't worry if you don't find it there, there is another copy [here](https://github.com/HumbertoDiego/lidar-experiments/tree/main/manuals) and [here](https://github.com/ldrobotSensorTeam/ld_desktop_tool/releases/tag/V2.3.13) or just run Windows Update to find the driver. However, there is no SDK for Windows 7 and on, MacOS or Linux. 
+ * They offers a nice visualization tool called [LdsPointCloudViewer-v3.0.6](https://github.com/ldrobotSensorTeam/ld_desktop_tool/releases).
 
 Install both, connect the LiDAR to you PC USB port, open the LdsPointCloudViewer software, choose Device: LDS14P, Port and hit play. The result is shown below:
 
@@ -316,10 +316,11 @@ Install both, connect the LiDAR to you PC USB port, open the LdsPointCloudViewer
 
 #### <a name="section-332"> Use a WSL Ubuntu 20.04 distro as middle layer
 
-Requisitos
+Requirements
 * Fazer o download e instalar o [Windows Subsystem for Linux Kernel](https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi "Windows Subsystem for Linux Kernel") (wsl2kernel)
+* [usbipd-win](https://github.com/dorssel/usbipd-win/releases) to share USB devices connected to Windows to the WSL.
 
-Open Windows terminal as administrator and type this to check available distros:
+Open Windows 11 terminal as administrator and type this to check available distros:
 
 ```shell
 > wsl --list --online
@@ -356,7 +357,31 @@ Open Ubuntu terminal and install ROS with the [single line command](https://wiki
 
 ```shell
 user@PC:~$ wget -c https://raw.githubusercontent.com/qboticslabs/ros_install_noetic/master/ros_install_noetic.sh && chmod +x ./ros_install_noetic.sh && ./ros_install_noetic.sh
+...
+user@PC:~$ sudo apt install linux-tools-5.4.0-77-generic hwdata
+...
+user@PC:~$ sudo update-alternatives --install /usr/local/bin/usbip usbip /usr/lib/linux-tools/5.4.0-77-generic/usbip 20
+...
 ```
+
+From an administrator command prompt on Windows, run this command. It will list all the USB devices connected to Windows.
+
+```shell
+# Unplug Device
+> usbipd list
+Connected:
+BUSID  VID:PID    DEVICE                              STATE
+2-2    275d:0ba6  Dispositivo de Entrada USB          Not shared
+2-10   8087:0aaa  Intel(R) Wireless Bluetooth(R)      Not shared
+# Plug Device
+> usbipd list
+Connected:
+BUSID  VID:PID    DEVICE                                                        STATE
+2-1    1a86:55d4  USB-Enhanced-SERIAL CH9102 (COM7)                             Not shared
+2-2    275d:0ba6  Dispositivo de Entrada USB                                    Not shared
+2-10   8087:0aaa  Intel(R) Wireless Bluetooth(R)                                Not shared
+```
+
 
 ## <a name="section-4"></a> 4. Get data with a ROS subscriber
 
