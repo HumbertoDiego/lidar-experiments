@@ -306,7 +306,7 @@ When under Windows, it is necessary to install the serial port driver of the USB
 
 They offers a nice visualization tool called [LdsPointCloudViewer-v3.0.6](https://github.com/ldrobotSensorTeam/ld_desktop_tool/releases).
 
-Install both, connect the LiDAR to you PC USB port, open the CloudViewer software, choose DEVICE: LDS14P, PORT and hit play. the result is shown below:
+Install both, connect the LiDAR to you PC USB port, open the LdsPointCloudViewer software, choose Device: LDS14P, Port and hit play. The result is shown below:
 
 <img src='imgs/WindowsCloudViewer.png'>
 
