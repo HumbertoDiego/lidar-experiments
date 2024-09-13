@@ -4,8 +4,11 @@ Learning Path for LiDAR usage and its possibilities in conjunction with another 
 ## Summary
 
 * [1. Lidar 360º - LD14P Presentation](#section-1)
-* [2. Installation and run the ROS publisher via USB](#section-2)
-* [3. Instalation in Raspberry via GPIO](#section-3)
+* [2. Installation in a Raspberry and run the ROS publisher via USB](#section-2)
+* [3. Instalation in another platforms](#section-3)
+    * [Install on a Raspberry via GPIO](#section-31)
+    * [Install on a Ubuntu/MacOS computer via USB](#section-32)
+    * [Install on a Windows computer via USB](#section-33)
 * [4. Get data with a ROS subscriber](#section-4)
 * [5. Using ROS Rviz for visualization](#section-5)
 * [6. Combining with inertial sensor](#section-6)
@@ -19,7 +22,7 @@ There are a lot of 360° LIDAR out there, RoboPeak Team started make low cost on
 
 The LD14P claims it's a short distance 360º LiDAR, whith 2-8Hz(default 6Hz), minimum measure distance of 0.1m, range of 6-8m dependig on if its black or white, support for ROS1, ROS2, Python routines that run on Ubuntu and Windows.
 
-## <a name="section-2"></a> 2. Installation and run the ROS publisher via USB
+## <a name="section-2"></a> 2. Installation in a Raspberry and run the ROS publisher via USB
 
 <img src='imgs/setup-01.jpeg'>
 
@@ -285,7 +288,13 @@ intensities: [214.0, ..., 212.0]
 
 Press Ctrl+c to stop the messages. 
 
-## <a name="section-3"></a> 3. Instalation in Raspberry via GPIO
+## <a name="section-3"></a> 3. Instalation in another platforms
+
+### <a name="section-31"></a> Install on a Raspberry via GPIO
+
+### <a name="section-32"></a> Install on a Ubuntu/MacOS computer via USB
+
+### <a name="section-32"></a> Install on a Rindows computer via USB
 
 ## <a name="section-4"></a> 4. Get data with a ROS subscriber
 
