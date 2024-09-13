@@ -1,5 +1,5 @@
 # LiDAR-experiments
-Learning Path for LiDAR usage and its possibilities in conjunction with another sensors
+Learning path for LiDAR usage and its possibilities in conjunction with another sensors
 
 ## Summary
 
