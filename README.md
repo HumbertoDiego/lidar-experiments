@@ -15,7 +15,7 @@ Learning Path for LiDAR usage and its possibilities in conjunction with another 
 
 <img src='imgs/OIP.jpeg'>
 
-There are a lot of RPLIDAR out there, in general you will have to follow the manufacturer instructions to have it running. Some times, some instructions are the same for different RPLIDARs. 
+There are a lot of 360° LIDAR out there, RoboPeak Team started make low cost ones and get its name popularized in some models like RP Lidar A1 series from SLAMTEC. In general, you will have to follow the manufacturer instructions to have it running. Some times, some instructions are the same for different 360° LiDARs. 
 
 The LD14P claims it's a short distance 360º LiDAR, whith 2-8Hz(default 6Hz), minimum measure distance of 0.1m, range of 6-8m dependig on if its black or white, support for ROS1, ROS2, Python routines that run on Ubuntu and Windows.
 
