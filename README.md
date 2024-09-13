@@ -308,7 +308,7 @@ Press Ctrl+c to stop the messages.
 
 Requirements
  * When under Windows, it is necessary to install the serial port driver of the USB adapter board. The apdapter name is CP2102 and its driver can be obtained from Silicon Labs' official website:  [CP210x_Universal_Windows_Driver](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers). Don't worry if you don't find it there, there is another copy [here](https://github.com/HumbertoDiego/lidar-experiments/tree/main/manuals) and [here](https://github.com/ldrobotSensorTeam/ld_desktop_tool/releases/tag/V2.3.13) or just run Windows Update to find the driver. However, there is no SDK for Windows 7 and on, MacOS or Linux. 
- * They offers a nice visualization tool called [LdsPointCloudViewer-v3.0.6](https://github.com/ldrobotSensorTeam/ld_desktop_tool/releases).
+ * They offer a visualization tool called [LdsPointCloudViewer-v3.0.6](https://github.com/ldrobotSensorTeam/ld_desktop_tool/releases).
 
 Install both, connect the LiDAR to you PC USB port, open the LdsPointCloudViewer software, choose Device: LDS14P, Port and hit play. The result is shown below:
 
