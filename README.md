@@ -6,7 +6,7 @@ Learning Path for LiDAR usage and its possibilities in conjunction with another 
 * [1. Lidar 360º - LD14P Presentation](#section-1)
 * [2. Installation and run the ROS publisher via USB](#section-2)
 * [3. Instalation in Raspberry via GPIO](#section-3)
-* [4. Get data with ROS subscriber](#section-4)
+* [4. Get data with a ROS subscriber](#section-4)
 * [5. Using ROS Rviz for visualization](#section-5)
 * [6. Combining with inertial sensor](#section-6)
 
@@ -179,9 +179,186 @@ process[base_to_laserLD14-2]: started with pid [1139]
 [ INFO] [1726181935.814503065]: start normal, pub lidar data
 ```
 
+As we can see, tere are two nodes runnig, `/ldlidar_publisher_ld14` and `/base_to_laserLD14` . Check them with: 
+
+```shell
+ubuntu@ubiquityrobot:~$ rosnode info /ldlidar_publisher_ld14
+Node [/ldlidar_publisher_ld14]
+Publications:
+ * /pointcloud2d [sensor_msgs/PointCloud]
+ * /rosout [rosgraph_msgs/Log]
+ * /scan [sensor_msgs/LaserScan]
+ ...
+
+ubuntu@ubiquityrobot:~$ rosnode info /base_to_laserLD14
+ Node [/base_to_laserLD14]
+Publications:
+ * /rosout [rosgraph_msgs/Log]
+ * /tf [tf2_msgs/TFMessage]
+```
+
+You can check the message structure of each topic by:
+
+```shell
+ubuntu@ubiquityrobot:~$ rosmsg show sensor_msgs/PointCloud
+std_msgs/Header header
+  uint32 seq
+  time stamp
+  string frame_id
+geometry_msgs/Point32[] points
+  float32 x
+  float32 y
+  float32 z
+sensor_msgs/ChannelFloat32[] channels
+  string name
+  float32[] values
+
+ubuntu@ubiquityrobot:~$ rosmsg show sensor_msgs/LaserScan
+std_msgs/Header header
+  uint32 seq
+  time stamp
+  string frame_id
+float32 angle_min
+float32 angle_max
+float32 angle_increment
+float32 time_increment
+float32 scan_time
+float32 range_min
+float32 range_max
+float32[] ranges
+float32[] intensities
+```
+
+As we can see, we can either get (x,y,z) of a returned laser shot point if we subscribe to `/pointcloud2d` topic or ranges whith angle increment if we subscribe to `/scan` topic.
+
+Let's check `pointcloud2d` and `scan` topics:
+
+```shell
+ubuntu@ubiquityrobot:~$ rostopic echo /pointcloud2d
+header:
+  seq: 9575
+  stamp:
+    secs: 1726193242
+    nsecs: 184712366
+  frame_id: "base_laser"
+points:
+  -
+    x: -2.5465500354766846
+    y: 2.3231210708618164
+    z: 0.0
+...
+  -
+    x: 2.8701744079589844
+    y: 0.3379339873790741
+    z: 0.0
+channels:
+  -
+    name: "intensity"
+    values: [214.0, ..., 214.0]
+  -
+    name: "timeincrement"
+    values: [0.00025099029880948365]
+  -
+    name: "scantime"
+    values: [0.16665756702423096]
+...
+
+ubuntu@ubiquityrobot:~$ rostopic echo /scan
+header: 
+  seq: 4599
+  stamp:
+    secs: 1726192410
+    nsecs: 684359223
+  frame_id: "base_laser"
+angle_min: 0.0
+angle_max: 6.2831854820251465
+angle_increment: 0.009420068003237247
+time_increment: 0.0002497385139577091
+scan_time: 0.1665755808353424
+range_min: 0.019999999552965164
+range_max: 12.0
+ranges: [3.0339999198913574, ..., 3.066999912261963]
+intensities: [214.0, ..., 212.0]
+...
+```
+
+Press Ctrl+c to stop the messages. 
+
 ## <a name="section-3"></a> 3. Instalation in Raspberry via GPIO
 
-## <a name="section-4"></a> 4. Get data with ROS subscriber
+## <a name="section-4"></a> 4. Get data with a ROS subscriber
+
+Here, we aim to write a program to return a csv (`timestamp,x,y,z`) of some time of the LiDAR operation.
+
+```Python
+#!/usr/bin/python3
+import rospy
+from sensor_msgs.msg import PointCloud
+
+def add_increment_to_timestamp(timestamp, increment, size):
+    return [timestamp+i*increment for i in range(size)]
+
+def put_together(timestamps, points):
+    return f"{timestamps},{points.x},{points.y},{points.z}\n"
+
+def callback(data):
+    # Get x,y,z
+    points = data.points
+    # Get timestamps
+    initial_timestamp = data.header.stamp.secs + data.header.stamp.nsecs/1000000000
+    timeincrement = data.channels[1].values[0]
+    timestamps = add_increment_to_timestamp(initial_timestamp, timeincrement, len(points))
+    # put together
+    msg = "".join(list(map(put_together,timestamps,points)))
+    print("-->",data.header.seq)
+    # save
+    with open("t_x_y_z.csv", "a") as f:
+        f.write(msg)
+
+def listener():
+    rospy.init_node('listener', anonymous=True)
+    rospy.Subscriber("/pointcloud2d", PointCloud, callback)
+    rospy.spin()
+
+if __name__ == '__main__':
+    listener()
+```
+
+Give execution permissions to this `subscriber.py` file and run it to get some iterations of data, then stop it with Ctrl+c. 
+
+```shell
+ubuntu@ubiquityrobot:~$ ./subscriber.py 
+--> 29161
+--> 29162
+--> 29163
+--> 29164
+--> 29165
+--> 29166
+--> 29167
+--> 29168
+--> 29169
+--> 29170
+--> 29171
+--> 29172
+--> 29173
+--> 29174
+--> 29175
+^C
+ubuntu@ubiquityrobot:~$ tail -n 3 t_x_y_z.csv 
+1726196519.851432,3.006025791168213,0.41837164759635925,0.0
+1726196519.8516831,3.022784948348999,0.3912481665611267,0.0
+1726196519.851934,2.955958127975464,0.3533284366130829,0.0
+```
+
+Copy the remote file to your local machine and play with it:
+
+```shell
+> scp ubuntu@192.168.1.20:/home/ubuntu/t_x_y_z.csv .
+ubuntu@192.168.1.20's password:
+t_x_y_z.csv     100%  580KB   6.3MB/s   00:00
+```
+
+The LiDAR was inside a box when [this sample file](https://github.com/HumbertoDiego/lidar-experiments/blob/main/sample_data/t_x_y_z.csv) was generated, can you recover the size of the box?
 
 ## <a name="section-5"></a> 5. Using ROS Rviz for visualization
 
