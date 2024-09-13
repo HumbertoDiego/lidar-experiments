@@ -406,6 +406,32 @@ From now on you can run the publisher inside Ubuntu shell just by:
 user@PC:~$ roslaunch ldlidar_sl_ros ld14p.launch
 ```
 
+Also, we can setup up a GUI forwarding to allow us to access from Windows, the ROS Rviz visualization tool executed inside Ubuntu. Follow this guide [here](https://jackkawell.wordpress.com/2020/06/12/ros-wsl2/) to get details. <!-- First, install and run [VcXsrv Windows X Server](https://sourceforge.net/projects/vcxsrv/), you will VcXsrv icon down in your icon tray.
+
+On your Windows terminal get the IP address that WSL sees Windows:
+
+```shell
+> ipconfig
+...
+Adaptador Ethernet vEthernet (WSL):
+...
+   Endereço IPv4. . . . . . . .  . . . . . . . : 172.26.0.1
+...
+```
+
+Go back to Ubuntu terminal and set DISPLAY environment variable which tells WSL2 where to send the graphics for any application that needs a display to function. Change the IP address (`172.26.0.1`) to fit your case.
+
+```shell
+user@PC:~$ echo 'export DISPLAY=172.26.0.1:0.0' >> ~/.bashrc
+```
+
+From now on you can run the publisher inside Ubuntu shell and launch Rviz just by:
+
+```shell
+user@PC:~$ roslaunch ldlidar_sl_ros viewer_ld14p_noetic.launch
+```
+-->
+
 ## <a name="section-4"></a> 4. Get data with a ROS subscriber
 
 Here, we aim to write a program to return a csv (`timestamp,x,y,z`) of some time of the LiDAR operation.
