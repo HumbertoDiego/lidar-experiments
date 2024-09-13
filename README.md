@@ -188,7 +188,7 @@ process[base_to_laserLD14-2]: started with pid [1139]
 [ INFO] [1726181935.814503065]: start normal, pub lidar data
 ```
 
-As we can see, tere are two nodes runnig, `/ldlidar_publisher_ld14` and `/base_to_laserLD14` . Check them with: 
+As we can see, there are two nodes runnig, `/ldlidar_publisher_ld14` and `/base_to_laserLD14` . Check them with: 
 
 ```shell
 ubuntu@ubiquityrobot:~$ rosnode info /ldlidar_publisher_ld14
