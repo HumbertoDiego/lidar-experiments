@@ -5,7 +5,7 @@ Learning Path for LiDAR usage and its possibilities in conjunction with another 
 
 * [1. Lidar 360º - LD14P Presentation](#section-1)
 * [2. Installation in a Raspberry and run the ROS publisher via USB](#section-2)
-* [3. Instalation in another platforms](#section-3)
+* [3. Installation in another platforms](#section-3)
     * [Install on a Raspberry via GPIO](#section-31)
     * [Install on a Ubuntu/MacOS computer via USB](#section-32)
     * [Install on a Windows computer via USB](#section-33)
@@ -288,7 +288,7 @@ intensities: [214.0, ..., 212.0]
 
 Press Ctrl+c to stop the messages. 
 
-## <a name="section-3"></a> 3. Instalation in another platforms
+## <a name="section-3"></a> 3. Installation in another platforms
 
 ### <a name="section-31"></a> Install on a Raspberry via GPIO
 
