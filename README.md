@@ -8,7 +8,9 @@ Learning path for LiDAR usage and its possibilities in conjunction with another 
 * [3. Installation in another platforms](#section-3)
     * [Install on a Raspberry via GPIO](#section-31)
     * [Install on a Ubuntu/MacOS computer via USB](#section-32)
-    * [Install on a Windows computer via USB](#section-33)
+    * [Install on a Windows 11 computer via USB](#section-33)
+        *  [Direct on Windows 11](#section331)
+        *  [Use a WSL Ubuntu 20.04 distro as middle layer](#section332)
 * [4. Get data with a ROS subscriber](#section-4)
 * [5. Using ROS Rviz for visualization](#section-5)
 * [6. Combining with inertial sensor](#section-6)
@@ -300,9 +302,9 @@ Press Ctrl+c to stop the messages.
 
 ### <a name="section-32"></a> Install on a Ubuntu/MacOS computer via USB
 
-### <a name="section-33"></a> Install on a Windows computer via USB
+### <a name="section-33"></a> Install on a Windows 11 computer via USB
 
-#### Direct on Windows
+#### <a name="section-331"> Direct on Windows 11
 
 When under Windows, it is necessary to install the serial port driver of the USB adapter board. The apdapter name is CP2102 and its driver can be obtained from Silicon Labs' official website:  [CP210x_Universal_Windows_Driver](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers). Don't worry if you don't find it there, there is another copy [here](https://github.com/HumbertoDiego/lidar-experiments/tree/main/manuals) and [here](https://github.com/ldrobotSensorTeam/ld_desktop_tool/releases/tag/V2.3.13) or just run Windows Update to find the driver. However, there is no SDK for Windows 7 and on, MacOS or Linux. 
 
@@ -312,7 +314,7 @@ Install both, connect the LiDAR to you PC USB port, open the LdsPointCloudViewer
 
 <img src='imgs/WindowsCloudViewer.png'>
 
-#### Use a WSL Ubuntu 20.04 distro as middle layer
+#### <a name="section-332"> Use a WSL Ubuntu 20.04 distro as middle layer
 
 Requisitos
 * Fazer o download e instalar o [Windows Subsystem for Linux Kernel](https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi "Windows Subsystem for Linux Kernel") (wsl2kernel)
