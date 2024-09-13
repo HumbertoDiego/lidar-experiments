@@ -300,7 +300,7 @@ Press Ctrl+c to stop the messages.
 
 ### <a name="section-32"></a> Install on a Ubuntu/MacOS computer via USB
 
-### <a name="section-32"></a> Install on a Rindows computer via USB
+### <a name="section-32"></a> Install on a Windows computer via USB
 
 ## <a name="section-4"></a> 4. Get data with a ROS subscriber
 
