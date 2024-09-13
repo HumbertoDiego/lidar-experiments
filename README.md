@@ -112,7 +112,7 @@ So, in this case, the device full path is `/dev/ttyACM0`.
 
 ### Install manufacturers drivers
 
-Another good thing about this Ubiquity image is that it already comes with ROS Noetic pre installed. Ros is a publisher/subscriber system to enable communication with various manufactures devices.
+Another good thing about this Ubiquity image is that it already comes with ROS Noetic pre installed. Ros is a publisher/subscriber system to enable communication with various manufacturers devices.
 
 ```shell
 ubuntu@ubiquityrobot:~$ 
