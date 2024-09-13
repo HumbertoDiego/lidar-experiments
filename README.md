@@ -353,7 +353,7 @@ Ubuntu 20.04 LTS foi instalado.
 Lançando Ubuntu 20.04 LTS...
 ```
 
-Open Ubuntu terminal and install ROS with the [single line command](https://wiki.ros.org/ROS/Installation/TwoLineInstall/).
+Open Ubuntu terminal and install ROS Noetic with the [single line command](https://wiki.ros.org/ROS/Installation/TwoLineInstall/).
 
 ```shell
 user@PC:~$ wget -c https://raw.githubusercontent.com/qboticslabs/ros_install_noetic/master/ros_install_noetic.sh && chmod +x ./ros_install_noetic.sh && ./ros_install_noetic.sh
@@ -400,11 +400,10 @@ usbipd: info: Using IP address 172.26.0.1 to reach the host.
 
 If you unplug device, repeat the last command above. Now go back to Ubuntu 20.04 terminal and check the new device with `ls /dev`. In our case, again `/dev/ttyACM0` showed up. You can use the same commands used on [Raspberry Pi Ubiquity installation of manufacturers drivers](#install-manufacturers-drivers) now. 
 
+From now on you can run the publisher inside Ubuntu shell just by:
+
 ```shell
-user@PC:~$ sudo apt install linux-tools-5.4.0-77-generic hwdata
-...
-user@PC:~$ sudo update-alternatives --install /usr/local/bin/usbip usbip /usr/lib/linux-tools/5.4.0-77-generic/usbip 20
-...
+user@PC:~$ roslaunch ldlidar_sl_ros ld14p.launch
 ```
 
 ## <a name="section-4"></a> 4. Get data with a ROS subscriber
