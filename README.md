@@ -472,7 +472,9 @@ if __name__ == '__main__':
     listener()
 ```
 
-Give execution permissions to this `subscriber.py` file and run it to get some iterations of data, this time on the Raspberry Pi, then stop it with Ctrl+c. 
+Give execution permissions to this `subscriber.py` file and run it to get some iterations of data, stop it with Ctrl+c. 
+
+### Execution on Raspberry Pi
 
 ```shell
 ubuntu@ubiquityrobot:~$ ./subscriber.py 
@@ -507,6 +509,8 @@ t_x_y_z.csv     100%  580KB   6.3MB/s   00:00
 ```
 
 The LiDAR was inside a box when [this sample file](https://github.com/HumbertoDiego/lidar-experiments/blob/main/sample_data/t_x_y_z.csv) was generated, can you recover the size of the box?
+
+### Execution on remote subscriber
 
 If we want to use a remote subscriber like the one installed via [WSL Ubuntu 20.04](#section-332), this message will apppear:
 
