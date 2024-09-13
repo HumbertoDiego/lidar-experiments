@@ -37,6 +37,8 @@ Requirements:
 * Power supply 5V - 3A
 * Internet connection plugged in via Ethernet cable (only initial steps)
 
+Burn the image in the SD card and plug it on the PI, we don't even need a monitor or keyboard, simple as that.
+
 ### SSH connection to Raspberry pi
 
 With this Ubiquity image, the wifi adapter of the Raspberry Pi acts as an Access Point, so we just need to enter `ubiquityrobotXXXX` network, where XXXX is part of the MAC address. The password is `robotseverywhere`. The sudo username is `ubuntu` with password `ubuntu`. 
