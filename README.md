@@ -37,7 +37,7 @@ Requirements:
 * Power supply 5V - 3A
 * Internet connection plugged in via Ethernet cable (only initial steps)
 
-Burn the image in the SD card and plug it on the PI, plug togehter the LiDAR and the adapter with the serial cable. The adapter and Raspberry with the USB cable and Raspbeery to power with ther power supply. We don't need a monitor or keyboard, simple as that. The internet coonection from ethernet port will be of great help in initial steps to install other dependencies on the Pi.
+Burn the image in the SD card and plug it on the Pi, plug the LiDAR and the adapter with the serial cable. The adapter and Raspberry with the USB cable and Raspbeery to power with ther power supply. We don't need a monitor or keyboard, simple as that. The internet coonection from ethernet port will be of great help in initial steps to install other dependencies on the Pi.
 
 ### SSH connection to Raspberry pi
 
