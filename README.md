@@ -41,7 +41,7 @@ In this network, just run on a shell:
 ssh ubuntu@10.42.0.1
 ```
 
-Enter the `ubuntu` password to get the the shell. We can check all IP addresses with:
+Enter the `ubuntu` password to get inside the Raspberry shell. Now, we can check all IP addresses with:
 
 ```shell
 ubuntu@ubiquityrobot:~$ ip a | grep "inet "
