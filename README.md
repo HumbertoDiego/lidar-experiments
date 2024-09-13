@@ -356,16 +356,16 @@ Lançando Ubuntu 20.04 LTS...
 Open Ubuntu terminal and install ROS Noetic with the [single line command](https://wiki.ros.org/ROS/Installation/TwoLineInstall/).
 
 ```shell
-user@PC:~$ wget -c https://raw.githubusercontent.com/qboticslabs/ros_install_noetic/master/ros_install_noetic.sh && chmod +x ./ros_install_noetic.sh && ./ros_install_noetic.sh
+user@ub20:~$ wget -c https://raw.githubusercontent.com/qboticslabs/ros_install_noetic/master/ros_install_noetic.sh && chmod +x ./ros_install_noetic.sh && ./ros_install_noetic.sh
 ...
 ```
 
 Also, install other dependencies on Ubuntu:
 
 ```shell
-user@PC:~$ sudo apt install linux-tools-5.4.0-77-generic hwdata
+user@ub20:~$ sudo apt install linux-tools-5.4.0-77-generic hwdata
 ...
-user@PC:~$ sudo update-alternatives --install /usr/local/bin/usbip usbip /usr/lib/linux-tools/5.4.0-77-generic/usbip 20
+user@ub20:~$ sudo update-alternatives --install /usr/local/bin/usbip usbip /usr/lib/linux-tools/5.4.0-77-generic/usbip 20
 ...
 ```
 
@@ -403,7 +403,7 @@ If you unplug device, repeat the last command above. Now go back to Ubuntu 20.04
 From now on you can run the publisher inside Ubuntu shell just by:
 
 ```shell
-user@PC:~$ roslaunch ldlidar_sl_ros ld14p.launch
+user@ub20:~$ roslaunch ldlidar_sl_ros ld14p.launch
 ```
 
 Also, we can setup up a GUI forwarding to allow us to access from Windows, the ROS Rviz visualization tool executed inside Ubuntu. Follow this guide [here](https://jackkawell.wordpress.com/2020/06/12/ros-wsl2/) to get details. 
@@ -424,13 +424,13 @@ Adaptador Ethernet vEthernet (WSL):
 Go back to Ubuntu terminal and set DISPLAY environment variable which tells WSL2 where to send the graphics for any application that needs a display to function. Change the IP address (`172.26.0.1`) to fit your case.
 
 ```shell
-user@PC:~$ echo 'export DISPLAY=172.26.0.1:0.0' >> ~/.bashrc
+user@ub20:~$ echo 'export DISPLAY=172.26.0.1:0.0' >> ~/.bashrc
 ```
 
 From now on you can run the publisher inside Ubuntu shell and launch Rviz just by:
 
 ```shell
-user@PC:~$ roslaunch ldlidar_sl_ros viewer_ld14p_noetic.launch
+user@ub20:~$ roslaunch ldlidar_sl_ros viewer_ld14p_noetic.launch
 ```
 -->
 
@@ -472,7 +472,7 @@ if __name__ == '__main__':
     listener()
 ```
 
-Give execution permissions to this `subscriber.py` file and run it to get some iterations of data, then stop it with Ctrl+c. 
+Give execution permissions to this `subscriber.py` file and run it to get some iterations of data, this time on the Raspberry Pi, then stop it with Ctrl+c. 
 
 ```shell
 ubuntu@ubiquityrobot:~$ ./subscriber.py 
@@ -507,6 +507,34 @@ t_x_y_z.csv     100%  580KB   6.3MB/s   00:00
 ```
 
 The LiDAR was inside a box when [this sample file](https://github.com/HumbertoDiego/lidar-experiments/blob/main/sample_data/t_x_y_z.csv) was generated, can you recover the size of the box?
+
+If we want to use a remote subscriber like the one installed via [WSL Ubuntu 20.04](#section-332), this message will apppear:
+
+```shell
+user@ub20:~$ ./subscriber.py
+Unable to register with master node [http://localhost:11311]: master may not be running yet. Will keep trying.
+```
+
+The problem is with the `ROS_MASTER_URI` enviroment variable, check if you can ping the Raspberry Pi and change it witg the correct network address
+
+```shell
+# Test remote Ros publisher
+user@ub20:~$ ping 192.168.1.20
+PING 192.168.1.20 (192.168.1.20) 56(84) bytes of data.
+64 bytes from 192.168.1.20: icmp_seq=1 ttl=63 time=2.09 ms
+^C
+user@ub20:~$ export ROS_MASTER_URI=http://192.168.1.20:11311
+user@ub20:~$  ./subscriber.py
+--> 275
+--> 276
+--> 277
+--> 278
+--> 279
+--> 280
+^C
+# If this work, consider set this variable at bash initialization
+user@ub20:~$ echo 'export ROS_MASTER_URI=http://192.168.1.20:11311' >> ~/.bashrc
+```
 
 ## <a name="section-5"></a> 5. Using ROS Rviz for visualization
 
