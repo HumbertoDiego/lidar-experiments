@@ -191,10 +191,11 @@ Publications:
  ...
 
 ubuntu@ubiquityrobot:~$ rosnode info /base_to_laserLD14
- Node [/base_to_laserLD14]
+Node [/base_to_laserLD14]
 Publications:
  * /rosout [rosgraph_msgs/Log]
  * /tf [tf2_msgs/TFMessage]
+ ...
 ```
 
 You can check the message structure of each topic by:
