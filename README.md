@@ -122,7 +122,7 @@ cd ~ && mkdir -p ldlidar_ros_ws/src
 
 cd ldlidar_ros_ws/src && git clone  https://github.com/ldrobotSensorTeam/ldlidar_sl_ros.git
 
-chmod 777 /dev/ttyACM0
+sudo chmod 777 /dev/ttyACM0
 
 cd ~/ldlidar_ros_ws && sed -i 's/ttyUSB0/ttyACM0/' src/ldlidar_sl_ros/launch/ld14p.launch 
 
@@ -398,7 +398,7 @@ usbipd: info: Using WSL distribution 'Ubuntu-20.04' to attach; the device will b
 usbipd: info: Using IP address 172.26.0.1 to reach the host.
 ```
 
-If you unplug device, repeat the last command above. Now go back to Ubuntu 20.04 terminal and check the new device with `ls /dev`. In our case, again `/dev/ttyACM0` showed up. You can use the same commands used on [Raspberry Pi Ubiquity installation of manufacturers drivers](#section-2) now. 
+If you unplug device, repeat the last command above. Now go back to Ubuntu 20.04 terminal and check the new device with `ls /dev`. In our case, again `/dev/ttyACM0` showed up. You can use the same commands used on [Raspberry Pi Ubiquity installation of manufacturers drivers](#install-manufacturers-drivers) now. 
 
 ```shell
 user@PC:~$ sudo apt install linux-tools-5.4.0-77-generic hwdata
