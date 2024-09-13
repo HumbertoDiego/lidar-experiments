@@ -398,6 +398,15 @@ usbipd: info: Using WSL distribution 'Ubuntu-20.04' to attach; the device will b
 usbipd: info: Using IP address 172.26.0.1 to reach the host.
 ```
 
+If you unplug device, repeat the last command above. Now go back to Ubuntu 20.04 terminal and check the new device with `ls /dev`. In our case, again `/dev/ttyACM0` showed up. You can use the same commands used on [Raspberry Pi Ubiquity installation of manufacturers drivers](#section-2) now. 
+
+```shell
+user@PC:~$ sudo apt install linux-tools-5.4.0-77-generic hwdata
+...
+user@PC:~$ sudo update-alternatives --install /usr/local/bin/usbip usbip /usr/lib/linux-tools/5.4.0-77-generic/usbip 20
+...
+```
+
 ## <a name="section-4"></a> 4. Get data with a ROS subscriber
 
 Here, we aim to write a program to return a csv (`timestamp,x,y,z`) of some time of the LiDAR operation.
