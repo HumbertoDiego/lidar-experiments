@@ -26,6 +26,7 @@ The LD14P claims it's a short distance 360º LiDAR, whith 2-8Hz(default 6Hz), mi
 Requirements:
 
 * LD14P 360º LiDAR
+* Serial port to USB adapter board
 * Raspiberry Pi model 3b
 * Sd card with [2023-02-09-ubiquity-base-focal-raspberry-pi.img](https://learn.ubiquityrobotics.com/noetic_pi_image_downloads) installed
 * Power supply 5V - 3A
