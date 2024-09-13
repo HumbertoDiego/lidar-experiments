@@ -350,7 +350,7 @@ Ubuntu 20.04 LTS foi instalado.
 Lançando Ubuntu 20.04 LTS...
 ```
 
-Open Ubuntu terminal andi nstall ROS with the [single line command](https://wiki.ros.org/ROS/Installation/TwoLineInstall/).
+Open Ubuntu terminal and install ROS with the [single line command](https://wiki.ros.org/ROS/Installation/TwoLineInstall/).
 
 ```shell
 user@PC:~$ wget -c https://raw.githubusercontent.com/qboticslabs/ros_install_noetic/master/ros_install_noetic.sh && chmod +x ./ros_install_noetic.sh && ./ros_install_noetic.sh
