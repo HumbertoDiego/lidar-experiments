@@ -406,7 +406,9 @@ From now on you can run the publisher inside Ubuntu shell just by:
 user@PC:~$ roslaunch ldlidar_sl_ros ld14p.launch
 ```
 
-Also, we can setup up a GUI forwarding to allow us to access from Windows, the ROS Rviz visualization tool executed inside Ubuntu. Follow this guide [here](https://jackkawell.wordpress.com/2020/06/12/ros-wsl2/) to get details. <!-- First, install and run [VcXsrv Windows X Server](https://sourceforge.net/projects/vcxsrv/), you will VcXsrv icon down in your icon tray.
+Also, we can setup up a GUI forwarding to allow us to access from Windows, the ROS Rviz visualization tool executed inside Ubuntu. Follow this guide [here](https://jackkawell.wordpress.com/2020/06/12/ros-wsl2/) to get details. 
+
+<!-- First, install and run [VcXsrv Windows X Server](https://sourceforge.net/projects/vcxsrv/), you will VcXsrv icon down in your icon tray.
 
 On your Windows terminal get the IP address that WSL sees Windows:
 
