@@ -24,6 +24,8 @@ We will be using here the **LD14P** from [ShenZhen LDROBOT Co., LTD , Sensor tea
 
 ## <a name="section-2"></a> 2. Installation in a Raspberry and run the ROS publisher via USB
 
+The initial setup is on top of a [Raspberry Pi 3B](https://www.raspberrypi.com/products/) motherboard. It's main purpose is to use ROS publish system to send data to remote subscribers, but we will to this at steps, in a first momment it will also acts as a subscriber, later we will install and run a remote subscriber.
+
 <img src='imgs/setup-01.jpeg'>
 
 Requirements:
