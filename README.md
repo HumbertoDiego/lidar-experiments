@@ -302,6 +302,14 @@ Press Ctrl+c to stop the messages.
 
 ### <a name="section-32"></a> Install on a Windows computer via USB
 
+When under Windows, it is necessary to install the serial port driver of the USB adapter board. The apdapter name is CP2102 and its driver can be obtained from Silicon Labs' official website:  [CP210x_Universal_Windows_Driver](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers)
+
+They offers a nice visualization tool called [LdsPointCloudViewer-v3.0.6](https://github.com/ldrobotSensorTeam/ld_desktop_tool/releases).
+
+Install both, connect the LiDAR to you PC USB port, open the CloudViewer software, choose DEVICE: LDS14P, PORT and hit play. the result is shown below:
+
+<img src='imgs/WindowsCloudViewer.png'>
+
 ## <a name="section-4"></a> 4. Get data with a ROS subscriber
 
 Here, we aim to write a program to return a csv (`timestamp,x,y,z`) of some time of the LiDAR operation.
