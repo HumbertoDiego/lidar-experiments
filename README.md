@@ -358,6 +358,11 @@ Open Ubuntu terminal and install ROS with the [single line command](https://wiki
 ```shell
 user@PC:~$ wget -c https://raw.githubusercontent.com/qboticslabs/ros_install_noetic/master/ros_install_noetic.sh && chmod +x ./ros_install_noetic.sh && ./ros_install_noetic.sh
 ...
+```
+
+Also, install other dependencies on Ubuntu:
+
+```shell
 user@PC:~$ sudo apt install linux-tools-5.4.0-77-generic hwdata
 ...
 user@PC:~$ sudo update-alternatives --install /usr/local/bin/usbip usbip /usr/lib/linux-tools/5.4.0-77-generic/usbip 20
@@ -376,12 +381,22 @@ BUSID  VID:PID    DEVICE                              STATE
 # Plug Device
 > usbipd list
 Connected:
-BUSID  VID:PID    DEVICE                                                        STATE
-2-1    1a86:55d4  USB-Enhanced-SERIAL CH9102 (COM7)                             Not shared
-2-2    275d:0ba6  Dispositivo de Entrada USB                                    Not shared
-2-10   8087:0aaa  Intel(R) Wireless Bluetooth(R)                                Not shared
+BUSID  VID:PID    DEVICE                              STATE
+2-1    1a86:55d4  USB-Enhanced-SERIAL CH9102 (COM7)   Not shared
+2-2    275d:0ba6  Dispositivo de Entrada USB          Not shared
+2-10   8087:0aaa  Intel(R) Wireless Bluetooth(R)      Not shared
 ```
 
+Select the bus ID of the device you’d like to attach to WSL and run this command. In our case, with busid `2-1`. 
+
+```shell
+# Share Device
+> usbipd bind --busid 2-1
+# Attach Device
+> usbipd attach --wsl --busid 2-1
+usbipd: info: Using WSL distribution 'Ubuntu-20.04' to attach; the device will be available in all WSL 2 distributions.
+usbipd: info: Using IP address 172.26.0.1 to reach the host.
+```
 
 ## <a name="section-4"></a> 4. Get data with a ROS subscriber
 
