@@ -519,7 +519,7 @@ user@ub20:~$ ./subscriber.py
 Unable to register with master node [http://localhost:11311]: master may not be running yet. Will keep trying.
 ```
 
-The problem is with the `ROS_MASTER_URI` enviroment variable, check if you can ping the Raspberry Pi and change it witg the correct network address
+The problem is with the `ROS_MASTER_URI` enviroment variable, check if you can ping the Raspberry Pi and change it with the correct network address:
 
 ```shell
 # Test remote Ros publisher
