@@ -302,6 +302,8 @@ Press Ctrl+c to stop the messages.
 
 ### <a name="section-33"></a> Install on a Windows computer via USB
 
+#### Direct on Windows
+
 When under Windows, it is necessary to install the serial port driver of the USB adapter board. The apdapter name is CP2102 and its driver can be obtained from Silicon Labs' official website:  [CP210x_Universal_Windows_Driver](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers). Don't worry if you don't find it there, there is another copy [here](https://github.com/HumbertoDiego/lidar-experiments/tree/main/manuals) and [here](https://github.com/ldrobotSensorTeam/ld_desktop_tool/releases/tag/V2.3.13) or just run Windows Update to find the driver. However, there is no SDK for Windows 7 and on, MacOS or Linux. 
 
 They offers a nice visualization tool called [LdsPointCloudViewer-v3.0.6](https://github.com/ldrobotSensorTeam/ld_desktop_tool/releases).
@@ -309,6 +311,50 @@ They offers a nice visualization tool called [LdsPointCloudViewer-v3.0.6](https:
 Install both, connect the LiDAR to you PC USB port, open the LdsPointCloudViewer software, choose Device: LDS14P, Port and hit play. The result is shown below:
 
 <img src='imgs/WindowsCloudViewer.png'>
+
+#### Use a WSL Ubuntu 20.04 distro as middle layer
+
+Requisitos
+* Fazer o download e instalar o [Windows Subsystem for Linux Kernel](https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi "Windows Subsystem for Linux Kernel") (wsl2kernel)
+
+Open Windows terminal as administrator and type this to check available distros:
+
+```shell
+> wsl --list --online
+A seguir está uma lista de distribuições válidas que podem ser instaladas.
+Instale usando "wsl --install -d <Distro>".
+
+NAME                            FRIENDLY NAME
+Ubuntu                          Ubuntu
+Debian                          Debian GNU/Linux
+kali-linux                      Kali Linux Rolling
+Ubuntu-18.04                    Ubuntu 18.04 LTS
+Ubuntu-20.04                    Ubuntu 20.04 LTS
+Ubuntu-22.04                    Ubuntu 22.04 LTS
+Ubuntu-24.04                    Ubuntu 24.04 LTS
+OracleLinux_7_9                 Oracle Linux 7.9
+OracleLinux_8_7                 Oracle Linux 8.7
+OracleLinux_9_1                 Oracle Linux 9.1
+openSUSE-Leap-15.6              openSUSE Leap 15.6
+SUSE-Linux-Enterprise-15-SP5    SUSE Linux Enterprise 15 SP5
+SUSE-Linux-Enterprise-15-SP6    SUSE Linux Enterprise 15 SP6
+openSUSE-Tumbleweed             openSUSE Tumbleweed
+```
+
+Install Ubuntu 20.04
+
+```shell
+> wsl --install -d Ubuntu-20.04
+Instalando: Ubuntu 20.04 LTS
+Ubuntu 20.04 LTS foi instalado.
+Lançando Ubuntu 20.04 LTS...
+```
+
+Open Ubuntu terminal andi nstall ROS with the [single line command](https://wiki.ros.org/ROS/Installation/TwoLineInstall/).
+
+```shell
+user@PC:~$ wget -c https://raw.githubusercontent.com/qboticslabs/ros_install_noetic/master/ros_install_noetic.sh && chmod +x ./ros_install_noetic.sh && ./ros_install_noetic.sh
+```
 
 ## <a name="section-4"></a> 4. Get data with a ROS subscriber
 
