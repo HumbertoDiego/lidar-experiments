@@ -309,7 +309,6 @@ Requirements:
 * LD14P 360º LiDAR
 * Raspiberry Pi model 3b
 * Sd card with [2023-02-09-ubiquity-base-focal-raspberry-pi.img](https://learn.ubiquityrobotics.com/noetic_pi_image_downloads) installed
-* Power supply 5V - 3A
 * pip install pyserial
 
 We have to enable the serial interface on th Pi. For that, open the file `/boot/config.txt` and add the following at the end of the file: `enable_uart=1`. This will tell our Pi to enable the serial interface while booting up. Do not forget to save the changes you made.
@@ -607,3 +606,12 @@ user@ub20:~$ echo 'export ROS_MASTER_URI=http://192.168.1.20:11311' >> ~/.bashrc
 ## <a name="section-5"></a> 5. Using ROS Rviz for visualization
 
 ## <a name="section-6"></a> 6. Combining with inertial sensor
+
+
+<!-- 
+git init
+git remote add origin https://github.com/HumbertoDiego/lidar-experiments
+git pull origin main
+#Do changes
+git add * ; git commit -m "update Readme and files"; git push -u origin main
+ -->
