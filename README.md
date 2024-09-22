@@ -10,7 +10,7 @@ Learning steps for LiDAR usage and its possibilities in conjunction with another
     * [Install on a Ubuntu/MacOS computer via USB](#section-32)
     * [Install on a Windows 11 computer via USB](#section-33)
         *  [Direct on Windows 11](#section-331)
-        *  [Use a WSL Ubuntu 20.04 distro as middle layer](#section-332)
+        *  [Redirect USB from a middle layer Windows 11 to a WSL Ubuntu 20.04 distro ](#section-332)
 * [4. Get data with a ROS subscriber](#section-4)
 * [5. Using ROS Rviz for visualization](#section-5)
 * [6. Combining with inertial sensor](#section-6)
@@ -377,7 +377,7 @@ Install both, connect the LiDAR to you PC USB port, open the LdsPointCloudViewer
 
 <img src='imgs/WindowsCloudViewer.png'>
 
-#### <a name="section-332"> Use a WSL Ubuntu 20.04 distro as middle layer
+#### <a name="section-332"> Redirect USB from a middle layer Windows 11 to a WSL Ubuntu 20.04 distro 
 
 Requirements
 * Fazer o download e instalar o [Windows Subsystem for Linux Kernel](https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi "Windows Subsystem for Linux Kernel") (wsl2kernel)
