@@ -300,6 +300,70 @@ Press Ctrl+c to stop the messages.
 
 ### <a name="section-31"></a> Install on a Raspberry via GPIO
 
+This setup, on top of a [Raspberry Pi 3B](https://www.raspberrypi.com/products/) motherboard GPIO. It's an alternative way to collect data and understand the usage of a Serial Port Comunication. The connection between the LiDAR and Raspberry was made like the picture below:
+
+<img src='imgs/setup-02.png' width="800">
+
+Requirements:
+
+* LD14P 360º LiDAR
+* Raspiberry Pi model 3b
+* Sd card with [2023-02-09-ubiquity-base-focal-raspberry-pi.img](https://learn.ubiquityrobotics.com/noetic_pi_image_downloads) installed
+* Power supply 5V - 3A
+* pip install pyserial
+
+We have to enable the serial interface on th Pi. For that, open the file `/boot/config.txt` and add the following at the end of the file: `enable_uart=1`. This will tell our Pi to enable the serial interface while booting up. Do not forget to save the changes you made.
+
+Reading `LD14P LiDAR Development Manual V0.2` we get DATA PACKET FORMAT as follows:
+
+<img src='imgs/DataPacket.png' width="800">
+
+And a programa like this (`getSerialData.py`) could access the distance and angles:
+
+```Python
+#!/usr/bin/python3
+import serial
+port = serial.Serial("/dev/ttyAMA0",baudrate=230400)
+while True:
+    if port.read(1) == b'\x54':
+        print("======Header======",54)
+        print("Frame\t\t",port.read(1).hex())
+        print("Speed\t\t", int.from_bytes(port.read(2), byteorder="little"),"º/s")
+        print("StartAngle\t",int.from_bytes(port.read(2), byteorder="little")/100.0,"º")
+        print("Data")
+        for i in range(12):
+            print(f"\tP{i+1} Distance\t",int.from_bytes(port.read(2), byteorder="little"),"mm", end='\t')
+            print(f"\tIntensity\t",int.from_bytes(port.read(1), byteorder="little"))
+        print("EndAngle\t",int.from_bytes(port.read(2), byteorder="little")/100.0,"º")
+        print("TimeStamp\t",int.from_bytes(port.read(2), byteorder="little"),"ms (in 0-30k loop)")
+        print("CRCchecksum\t",port.read(1).hex())
+```
+
+Just Run with:
+
+```shell
+ubuntu@ubiquityrobot:~$ ./getSerialData.py
+======Header====== 54
+Frame            2c
+Speed            2164 º/s
+StartAngle       2.24 º
+Data
+        P1 Distance      2533 mm                Intensity        212
+        P2 Distance      2545 mm                Intensity        212
+        P3 Distance      2557 mm                Intensity        212
+        P4 Distance      2574 mm                Intensity        212
+        P5 Distance      2588 mm                Intensity        212
+        P6 Distance      2604 mm                Intensity        212
+        P7 Distance      2617 mm                Intensity        212
+        P8 Distance      2642 mm                Intensity        212
+        P9 Distance      2661 mm                Intensity        212
+        P10 Distance     2680 mm                Intensity        212
+        P11 Distance     2716 mm                Intensity        212
+        P12 Distance     3630 mm                Intensity        208
+EndAngle         8.19 º
+TimeStamp        2331 ms (in 0-30k loop)
+CRCchecksum      e9
+```
 ### <a name="section-32"></a> Install on a Ubuntu/MacOS computer via USB
 
 ### <a name="section-33"></a> Install on a Windows 11 computer via USB
