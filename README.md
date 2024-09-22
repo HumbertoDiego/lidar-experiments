@@ -311,7 +311,7 @@ Requirements:
 * Sd card with [2023-02-09-ubiquity-base-focal-raspberry-pi.img](https://learn.ubiquityrobotics.com/noetic_pi_image_downloads) installed
 * pip install pyserial
 
-We have to enable the serial interface on th Pi. For that, open the file `/boot/config.txt` and add the following at the end of the file: `enable_uart=1`. This will tell our Pi to enable the serial interface while booting up. Do not forget to save the changes you made.
+We have to enable the serial interface on the Pi. For that, open the file `/boot/config.txt` and add the following at the end of the file: `enable_uart=1`. This will tell our Pi to enable the serial interface while booting up. Do not forget to save the changes you made.
 
 Reading `LD14P LiDAR Development Manual V0.2` we get DATA PACKET FORMAT as follows:
 
