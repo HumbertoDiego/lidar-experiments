@@ -619,7 +619,7 @@ To access the data, they provide a nice lib to make things just trivial:
 ubuntu@ubiquityrobot:~$ sudo pip3 install adafruit-circuitpython-bno055
 ```
 
-A simple, program like the one below could, access the data provided by the sensor:
+A simple, program like the one below can access the data provided by the sensor:
 
 ```Python
 #!/usr/bin/python3
