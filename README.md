@@ -607,6 +607,41 @@ user@ub20:~$ echo 'export ROS_MASTER_URI=http://192.168.1.20:11311' >> ~/.bashrc
 
 ## <a name="section-6"></a> 6. Combining with inertial sensor
 
+The LiDAR Data reference system is centered on the LiDAR itself, but we aim to change the position of the sensor at the same time we update all te points coordinates, moving all of them back to the first origin of the LiDAR.
+
+For that, we have installed on the Raspberry Pi the [Adafruit BNO055 Absolute Orientation Sensor](https://github.com/adafruit/Adafruit_CircuitPython_BNO055) - nine degree of freedom inertial measurement unit module with sensor fusion - alongside our LD14P 360º LiDAR scanner. Everything needed was found on their project page. The Pinnage was done as follows:
+
+<img src='imgs/IMUsensor-Pinout.png' width="80%">
+
+To access the data, they provide a nice lib to make things just trivial:
+
+```shell
+ubuntu@ubiquityrobot:~$ sudo pip3 install adafruit-circuitpython-bno055
+```
+
+A simple, program like the one below could, access the data provided by the sensor:
+
+```Python
+#!/usr/bin/python3
+import adafruit_bno055
+import board
+import time
+
+i2c = board.I2C()
+sensor = adafruit_bno055.BNO055_I2C(i2c)
+# Modes in Datasheet Table 3-3: Operating modes overview
+sensor.mode = adafruit_bno055.NDOF_MODE
+
+t_start = time.time()
+timeout = 10 # seconds
+
+while time.time() < t_start + timeout:
+    print(sensor.linear_acceleration) # m/s without gravity
+    print(sensor.acceleration)        # m/s with gravity
+    print(sensor.gyro)                # radians/s
+    print(sensor.magnetic)            # microteslas
+   
+```
 
 <!-- 
 git init
