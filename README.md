@@ -302,7 +302,7 @@ Press Ctrl+c to stop the messages.
 
 This setup, on top of a [Raspberry Pi 3B](https://www.raspberrypi.com/products/) motherboard GPIO. It's an alternative way to collect data and understand the usage of a Serial Port Comunication. The connection between the LiDAR and Raspberry was made like the picture below:
 
-<img src='imgs/setup-02.png' width="400">
+<img src='imgs/setup-02.png' width="500">
 
 Requirements:
 
