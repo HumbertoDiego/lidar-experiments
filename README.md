@@ -611,7 +611,7 @@ The LiDAR Data reference system is centered on the LiDAR itself, but we aim to c
 
 For that, we have installed on the Raspberry Pi the [Adafruit BNO055 Absolute Orientation Sensor](https://github.com/adafruit/Adafruit_CircuitPython_BNO055) - nine degree of freedom inertial measurement unit module with sensor fusion - alongside our LD14P 360º LiDAR scanner. Everything needed was found on their project page. The Pinnage was done as follows:
 
-<img src='imgs/IMUsensor-Pinout.png' width="80%">
+<img src='imgs/IMUsensor-Pinout.png' width="500">
 
 To access the data, they provide a nice lib to make things just trivial:
 
