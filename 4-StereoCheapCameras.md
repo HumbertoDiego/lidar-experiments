@@ -1,6 +1,8 @@
 # LiDAR-experiments
 Learning steps for LiDAR usage and its possibilities in conjunction with another sensors
 
+# Stereo Cheap Cameras
+
 ## Summary
 
 * [1. Cameras Arrangement](#section-1)
