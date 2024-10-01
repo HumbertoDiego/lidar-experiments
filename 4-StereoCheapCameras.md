@@ -18,7 +18,12 @@ Learning steps for LiDAR usage and its possibilities in conjunction with another
 
 There are a lot o ~~shit~~ cheap cameras out there, how far with stereo pair quality images we can go with them? The key factor is dataset quality, in math terms, we want a lot of good keypoints found between images stereo pairs and it's next frames. Making videos with all cameras at fixed positions in relation to one another is our goal here. We start presenting the cameras arragement:
 
+<p float="left">
+<img src="imgs/arrangement.png" height="300">
+<img src="imgs/setup-04.png"  height="300">
+</p>
 
+Were y-axis is the vertical, x-axis is the horizontal orthogonal to the direction of motion and z-axis is the horizontal in the direction of motion.
 
 ## <a name="section-2"></a> 2. Cheap Camera on left
 
