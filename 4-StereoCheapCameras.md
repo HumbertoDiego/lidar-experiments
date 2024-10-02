@@ -5,16 +5,13 @@ Learning steps for LiDAR usage and its possibilities in conjunction with another
 
 ## Summary
 
-* [1. Cameras Arrangement](#section-1)
-* [2. Cheap Camera on left](#section-2)
-* [3. Cheap Camera on right](#section-3)
-* [4. Cheap Camera on center](#section-4)
-* [5. Cheap Camera spare 1](#section-5)
-* [6. Cheap Camera spare 2](#section-6)
-* [7. Cameras Calibration](#section-7)
-* [8. Cameras Rearrangement](#section-8)
+* [1. Cameras arrangement and setup](#section-1)
+* [2. Cheap cameras specs](#section-2)
+* [3. Cameras calibration](#section-3)
+* [4. Run OpenCV photo caputres in loop](#section-4)
+* [5. Cameras rearrangement](#section-5)
 
-## <a name="section-1"></a> 1. Cameras Arrangement
+## <a name="section-1"></a> 1. Cameras arrangement and setup
 
 There are a lot o ~~shit~~ cheap cameras out there, how far with stereo pair quality images we can go with them? The key factor is dataset quality, in math terms, we want a lot of good keypoints found between images stereo pairs and it's next frames. Making videos with all cameras at fixed positions in relation to one another is our goal here. We start presenting the cameras arragement:
 
@@ -51,32 +48,197 @@ ubuntu@ubiquityrobot:~$ ip a | grep "inet "
     inet 10.42.0.1/24 brd 10.42.0.255 scope global noprefixroute wlan0
 ```
 
-Create a folder to put your images and share it 
-via smb protocol:
+### Take 1st picture
 
 ```shell
-ubuntu@ubiquityrobot:~$ cd ~ && mkdir raspfotos/ && chmod 777 -R raspfotos/
-ubuntu@ubiquityrobot:~$ sudo apt update && sudo apt install samba
+ubuntu@ubiquityrobot:~$ sudo apt update && sudo apt install fswebcam
+ubuntu@ubiquityrobot:~$ fswebcam --no-banner imageX.jpg
+fswebcam --no-banner imageX.jpg
+--- Opening /dev/video0...
+Trying source module v4l2...
+/dev/video0 opened.
+No input was specified, using the first.
+--- Capturing frame...
+Captured frame in 0.00 seconds.
+--- Processing captured image...
+Disabling banner.
+Writing JPEG image to 'imageX.jpg'.
+```
+
+Notice the `/dev/video0`, you can choose the camera by change the device name with:
+
+```shell
+ubuntu@ubiquityrobot:~$ fswebcam --no-banner --device /dev/video0 image0.jpg
+```
+
+### Check device path of your cameras
+
+On Linux, every peripheral shows up at `/dev` folder choosed by OS at start up, sometimes they can change if you unplug and plug them back.
+
+```shell
+# Device unplugged
+ubuntu@ubiquityrobot:~$ ls /dev > nousb
+# Device plugged
+ubuntu@ubiquityrobot:~$ ls /dev > withusb
+# Check differences
+ubuntu@ubiquityrobot:~$ diff nousb withusb
+35a36,37
+> media0
+> media1
+173a176,177
+> video0
+> video1
+```
+
+We have the path for our 2 USB camera, `/dev/video0` and `/dev/video1`. The CSI camera is more trick to find.
+
+```shell
+ubuntu@ubiquityrobot:~$ echo $(ls /dev | grep video)
+video0 video1 video10 video11 video12 video13 video14 video15 video16 video4
+```
+
+When you find it, remember these paths. They are useful in programs like `fswebcam` and `opencv` to take photos from a specific camera or all of them.
+
+### SMB folder Share
+
+Create a folder to put your images and share it via smb protocol:
+
+```shell
+ubuntu@ubiquityrobot:~$ cd ~ && mkdir raspfotos/ 
+ubuntu@ubiquityrobot:~$ sudo chmod 777 -R raspfotos/ && sudo chown -R nobody.nogroup raspfotos 
+ubuntu@ubiquityrobot:~$ sudo apt update && sudo apt install samba samba-common-bin
 ubuntu@ubiquityrobot:~$ sudo nano /etc/samba/smb.conf
+# search for and edit
+workgroup = RASPFOTOS
 # Add to the bottom
 [raspfotos]
-    comment = Samba on Ubuntu
+    comment = Ubuntu File Server Share
     path = /home/ubuntu/raspfotos
-    read only = no
     browsable = yes
+    writeable = yes
+    guest ok = yes
+    read only = no
+    create mask = 0777
+    directory mask = 0777
+    public = yes
 ubuntu@ubiquityrobot:~$ sudo service smbd restart
 ```
 
-## <a name="section-2"></a> 2. Cheap Camera on left
+Now access remote folder typing `\\10.42.0.1` on the file path bar of the Windows Explorer or whatever IP address you are accessing your Pi. If you are on Linux, type `smb://10.42.0.1` on the File Explore filepath bar.
 
-## <a name="section-3"></a> 3. Cheap Camera on right
+<img src="imgs/Explorer.png">
 
-## <a name="section-4"></a> 4. Cheap Camera on center
+### Run photo captures in loop
 
-## <a name="section-5"></a> 5. Cheap Camera spare 1
+```shell
+for device in $(ls /dev | grep video)
+do
+fswebcam --no-banner --device /dev/$device raspfotos/image-$device.jpg
+done
+```
 
-## <a name="section-6"></a> 6. Cheap Camera spare 2
+Check the program above. We are saving the photos names with the device path. Now our missing camera showed up, in our case, `/dev/video3`. You can save it, set the execute permission and run it or just do this single line command:
 
-## <a name="section-7"></a> 7. Cameras Calibration
+```shell
+ubuntu@ubiquityrobot:~$ for device in $(ls /dev | grep video); do fswebcam --no-banner --device /dev/$device raspfotos/image-$device.jpg; done
+```
 
-## <a name="section-8"></a> 8. Cameras Rearrangement
+You will notice here, the long time to take bad resolution pictures. Next work is running these commands in parallel and set de resolution to a commom denominator of the cameras. Let's say 640x480.
+
+```shell
+# sequential photos
+ubuntu@ubiquityrobot:~$ for device in video0 video1 video3; do fswebcam -r 640x480 --no-banner --device /dev/$device raspfotos/image-$device.jpg ; done
+# parallel photos
+ubuntu@ubiquityrobot:~$ fswebcam -r 640x480 --no-banner --device /dev/video0 raspfotos/image-video0.jpg & \
+fswebcam -r 640x480 --no-banner --device /dev/video1 raspfotos/image-video1.jpg & \
+fswebcam -r 640x480 --no-banner --device /dev/video3 raspfotos/image-video3.jpg 
+```
+
+The total time is almost the same but check the time delta between the `Writing JPEG image to 'raspfotos/image-video0.jpg'.` and `Writing JPEG image to 'raspfotos/image-video3.jpg'.`, they are much closer now. 
+
+## <a name="section-2"></a> 2. Cheap cameras specs
+
+|               |left            | right         | center       | spare 1      | spare 2      |
+| ------------- | -------------  | ------------- |------------- |------------- |------------- |
+|     Look      | <img src="imgs/left.png"> |<img src="imgs/left.png">  |<img src="imgs/center.png"> |<img src="imgs/spare1.png">| <img src="imgs/spare2.png">|
+| Model name    | Cell 1, Row 2 | Cell 1, Row 2 | Pi camera NOIR 2.1 |Cell 2, Row 1 |Multilaser WC050 |
+| Image Max Res | Cell 1, Row 2 | Cell 1, Row 2 |3280 x 2464 |Cell 2, Row 1 |2.1 Mpx |
+| Video Max Res | Cell 1, Row 2 | Cell 1, Row 2 |1080p |Cell 2, Row 1 |1920x1080|
+|Time to Full-HD| Cell 1, Row 2 | Cell 1, Row 2 |Cell 1, Row 1 |Cell 2, Row 1 |Cell 1, Row 1 |
+
+
+
+## <a name="section-3"></a> 3. Cameras calibration
+
+## <a name="section-4"></a> 4. Run OpenCV photo captures in loop
+
+```
+#!/usr/bin/python3
+import cv2
+import time
+import argparse
+import os
+
+BASE_PHOTO_PATH = '/home/ubuntu/raspfotos'
+
+def list_avaiable_cameras():
+    a = []
+    for port in range(5):
+        cam = cv2.VideoCapture(port)
+        if not cam.isOpened():
+            print(f"Camera {port} is not opened.")
+        else:
+            a.append(port)
+        cam.release()
+    return a
+
+def main(t=60, best=0, conf='big'):
+    folder_name = len(os.listdir(BASE_PHOTO_PATH))+1
+    path = f"{BASE_PHOTO_PATH}/{folder_name}"
+    os.mkdir(path)
+
+    cam = []
+    avaiable_cameras = list_avaiable_cameras()
+    if best:
+        avaiable_cameras = avaiable_cameras[:1]
+    for i in [0,1,3]:#avaiable_cameras:
+        cam.append(cv2.VideoCapture(i))
+
+    count = 0
+    t_end = time.time() + t
+    while time.time() < t_end:
+        for i in range(len(cam)):
+            ret, image = cam[i].read()
+            if ret:
+                pic_name = f'{path}/cam{i}_frame{count}.jpg'
+                print(pic_name)
+                cv2.imwrite(pic_name, image)
+        count+=1
+    for i in range(len(cam)):
+        cam[i].release()
+    cv2.destroyAllWindows()
+
+    print("Post processing...")
+    #for image_path in os.listdir(path):
+    #    full_image_path = f"{path}/{image_path}"
+    #    img = cv2.imread(full_image_path, cv2.IMREAD_GRAYSCALE)
+    #    if "cam0" in image_path:
+    #        img = cv2.flip(img,0)
+    #    cv2.imwrite(full_image_path,img)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-s','--segundos',
+                        default=10,
+                        type=int,
+                        help='Add time in seconds')
+    parser.add_argument('-b','--best',
+                        default=0,
+                        type=int,
+                        help='Only use best best camera')
+    args = parser.parse_args()
+    print(f"Starting taking {args.segundos} seconds of photos.")
+    main(args.segundos, args.best)
+```
+
+## <a name="section-5"></a> 5. Cameras rearrangement

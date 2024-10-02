@@ -13,6 +13,8 @@ Learning steps for LiDAR usage and its possibilities in conjunction with another
 git init
 git remote add origin https://github.com/HumbertoDiego/lidar-experiments
 git pull origin main
-#Do changes
+#Do and push changes:
 git add * ; git commit -m "update Readme and files"; git push -u origin main
+#Pull changes
+git pull origin main
  -->
