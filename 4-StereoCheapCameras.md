@@ -88,7 +88,7 @@ ubuntu@ubiquityrobot:~$ ffmpeg -y -f v4l2 -r 25 -video_size 640x480 -i /dev/vide
 
 ### Stream the camera over network with `v4l2rtspserver`
 
-We will setup here a O Real Time Streaming Protocol (RTSP)  server for our cameras, let's start by installing the [v4l2rtspserver](https://github.com/mpromonet/v4l2rtspserver), we will have to go back to version 0.2.4 due to compatibility issues with our Ubuntu 20.04:
+We will setup here a Real Time Streaming Protocol (RTSP) server for our cameras, let's start by installing the [v4l2rtspserver](https://github.com/mpromonet/v4l2rtspserver), we will have to go back to version 0.2.4 due to compatibility issues with our Ubuntu 20.04:
 
 ```shell
 ubuntu@ubiquityrobot:~$ wget https://github.com/mpromonet/v4l2rtspserver/releases/download/v0.2.4/v4l2rtspserver-0.2.4-Linux-armv7.deb
@@ -208,7 +208,7 @@ The total time is almost the same but check the time delta between the `Writing 
 
 ## <a name="section-4"></a> 4. Run OpenCV photo captures in loop
 
-```
+```python
 #!/usr/bin/python3
 import cv2
 import time
@@ -228,17 +228,15 @@ def list_avaiable_cameras():
         cam.release()
     return a
 
-def main(t=60, best=0, conf='big'):
+def main(t=60):
     folder_name = len(os.listdir(BASE_PHOTO_PATH))+1
     path = f"{BASE_PHOTO_PATH}/{folder_name}"
     os.mkdir(path)
 
     cam = []
     avaiable_cameras = list_avaiable_cameras()
-    if best:
-        avaiable_cameras = avaiable_cameras[:1]
-    for i in [0,1,3]:#avaiable_cameras:
-        cam.append(cv2.VideoCapture(i))
+    for k in avaiable_cameras:
+        cam.append(cv2.VideoCapture(k))
 
     count = 0
     t_end = time.time() + t
@@ -250,17 +248,11 @@ def main(t=60, best=0, conf='big'):
                 print(pic_name)
                 cv2.imwrite(pic_name, image)
         count+=1
+    
     for i in range(len(cam)):
         cam[i].release()
+    
     cv2.destroyAllWindows()
-
-    print("Post processing...")
-    #for image_path in os.listdir(path):
-    #    full_image_path = f"{path}/{image_path}"
-    #    img = cv2.imread(full_image_path, cv2.IMREAD_GRAYSCALE)
-    #    if "cam0" in image_path:
-    #        img = cv2.flip(img,0)
-    #    cv2.imwrite(full_image_path,img)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -268,13 +260,9 @@ if __name__ == "__main__":
                         default=10,
                         type=int,
                         help='Add time in seconds')
-    parser.add_argument('-b','--best',
-                        default=0,
-                        type=int,
-                        help='Only use best best camera')
     args = parser.parse_args()
     print(f"Starting taking {args.segundos} seconds of photos.")
-    main(args.segundos, args.best)
+    main(args.segundos)
 ```
 
 ## <a name="section-5"></a> 5. Cameras rearrangement
