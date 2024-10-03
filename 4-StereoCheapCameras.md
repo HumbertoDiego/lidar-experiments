@@ -48,7 +48,7 @@ ubuntu@ubiquityrobot:~$ ip a | grep "inet "
     inet 10.42.0.1/24 brd 10.42.0.255 scope global noprefixroute wlan0
 ```
 
-### Take 1st picture
+### Take 1st picture with `fswebcam`
 
 ```shell
 ubuntu@ubiquityrobot:~$ sudo apt update && sudo apt install fswebcam
@@ -69,6 +69,42 @@ Notice the `/dev/video0`, you can choose the camera by change the device name wi
 
 ```shell
 ubuntu@ubiquityrobot:~$ fswebcam --no-banner --device /dev/video0 image0.jpg
+```
+
+### Take 1st picture with `ffmeg`
+
+```shell
+ubuntu@ubiquityrobot:~$ sudo apt update && sudo apt install ffmpeg
+ubuntu@ubiquityrobot:~$ ffmpeg -y -f v4l2 -video_size 1280x720 -i /dev/video0 -r 0.2 -qscale:v 2 -update 1 ~/webcam.jpg
+```
+
+The non trivial options of this command are `-r 0.2`: set FPS to 0.2 or 1 frame per 5 seconds,`-qscale:v 2`: set video quality [JPEG quality in this case], 2 is highest quality and `-update 1`: Enable in place update of image file for each video output frame, the ffmpeg command will run until interrupted with Ctrl+c or killed, this option generates better images, instead you can use `-frames:v 1` to generate a single frame file, but the result is more darker in low lights environments. 
+
+### Generate 1st video with `ffmeg`
+
+```shell
+ubuntu@ubiquityrobot:~$ ffmpeg -y -f v4l2 -r 25 -video_size 640x480 -i /dev/video0 output.mkv
+```
+
+### Stream the camera over network with `v4l2rtspserver`
+
+We will setup here a O Real Time Streaming Protocol (RTSP)  server for our cameras, let's start by installing the [v4l2rtspserver](https://github.com/mpromonet/v4l2rtspserver), we will have to go back to version 0.2.4 due to compatibility issues with our Ubuntu 20.04:
+
+```shell
+ubuntu@ubiquityrobot:~$ wget https://github.com/mpromonet/v4l2rtspserver/releases/download/v0.2.4/v4l2rtspserver-0.2.4-Linux-armv7.deb
+ubuntu@ubiquityrobot:~$ apt install ./v4l2rtspserver-0.2.4-Linux-armv7.deb
+# run the server in background with
+ubuntu@ubiquityrobot:~$ v4l2rtspserver &
+```
+
+The default options will generate a stream of `/dev/video0` at `rtsp://192.168.1.20:8554/unicast`. You can access it with any RTSP client (i.e [VLC](https://www.videolan.org/vlc/)). Also, you can try RTSP clients on [Android](https://play.google.com/store/apps/details?id=pl.huczeq.rtspplayer) or iOS.
+
+Kill RTSP server with:
+
+```shell
+ubuntu@ubiquityrobot:~$  ps -aux | grep v4l2rtspserver
+ubuntu   14704  ...  v4l2rtspserver
+ubuntu@ubiquityrobot:~$ sudo kill 14704
 ```
 
 ### Check device path of your cameras
@@ -97,7 +133,7 @@ ubuntu@ubiquityrobot:~$ echo $(ls /dev | grep video)
 video0 video1 video10 video11 video12 video13 video14 video15 video16 video4
 ```
 
-When you find it, remember these paths. They are useful in programs like `fswebcam` and `opencv` to take photos from a specific camera or all of them.
+When you find it, remember these paths. They are useful in programs like `fswebcam`, `ffmpeg` or `opencv` to take photos from a specific camera or all of them.
 
 ### SMB folder Share
 
