@@ -423,7 +423,9 @@ $$
 Which is solveable trough constrained least squares parameter estimation method. The scale of $p$ is set and the problem is transformed into <u>[A][p] tending to [0]</u> such that <u>||p||=1</u>:
 
 $$
-min (||Ap||^2) \ subject \ to \ ||p||=1 \\
+min (||Ap||^2) \ subject \ to \ ||p||=1
+$$
+$$
 min (p^TA^TAp) \ subject \ to \ p^Tp=1 \\
 $$
 
