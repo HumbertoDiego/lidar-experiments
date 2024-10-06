@@ -425,8 +425,9 @@ Which is solveable trough constrained least squares parameter estimation method.
 $$
 min (||Ap||^2) \ subject \ to \ ||p||=1
 $$
+
 $$
-min (p^TA^TAp) \ subject \ to \ p^Tp=1 \\
+min (p^TA^TAp) \ subject \ to \ p^Tp=1
 $$
 
 We can define a convenient loss function we want to minimize:
