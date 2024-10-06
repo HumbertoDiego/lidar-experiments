@@ -134,6 +134,13 @@ ubuntu@ubiquityrobot:~$ echo $(ls /dev | grep video)
 video0 video1 video10 video11 video12 video13 video14 video15 video16 video4
 ```
 
+Other great option is `v4l2-ctl`:
+
+```shell
+ubuntu@ubiquityrobot:~$ sudo apt install v4l-utils
+ubuntu@ubiquityrobot:~$ v4l2-ctl --list-devices
+```
+
 When you find it, remember these paths. They are useful in programs like `fswebcam`, `ffmpeg` or `opencv` to take photos from a specific camera or all of them.
 
 ### SMB folder Share
@@ -579,15 +586,18 @@ Consider the scenario on [1. Cameras arrangement and setup](#section-1). Three p
 
 ## <a name="section-3"></a> 3. Cheap cameras specs
 
+```shell
+# sudo apt install v4l-utils
 
-|                 |left                       | right                     | center                     | spare 1      | spare 2      |
-| -------------   | -------------             | -------------             |-------------               |------------- |------------- |
-|     Look        | <img src="imgs/left.png"> |<img src="imgs/left.png">  |<img src="imgs/center.png"> |<img src="imgs/spare1.png">| <img src="imgs/spare2.png">|
-| Model name      | USB2.0 PC CAMERA          | Cell 1, Row 2             | Pi camera NOIR 2.1         |GENERAL WEBCAM|Multilaser WC050 |
-| Driver name     | uvcvideo                  | ??????????????            | bm2835 mmal                | uvcvideo     |???????? |
-| Image Max Res   | Cell 1, Row 2             | Cell 1, Row 2             |3280 x 2464                 | 1920x1080    |2.1 Mpx |
-|Time to Full-HD  | Cell 1, Row 2             | Cell 1, Row 2             |Cell 1, Row 1               |Cell 2, Row 1 |Cell 1, Row 1 |
-|Possible controls|  brightness  (int) : 0 -255 <br> contrast  (int) : 0 -255 <br> saturation  (int)    : 0 -255 <br> hue  (int) : -127 -127 <br>gamma  (int) : 1 -8 <br>power_line_frequency  (menu)   : 0 -2<br>sharpness  (int) : 0 -15 <br>backlight_compensation  (int) : 1 -5 | Cell 1, Row 2             |brightness (int) : 0 -100 <br> contrast (int) : -100 -100<br> saturation (int) : -100 -100 <br> red_balance (int) : 1 -7999 <br> blue_balance (int) : 1 -7999<br> horizontal_flip (bool) : <br> vertical_flip (bool) :<br> power_line_frequency (menu) : 0 -3 <br> sharpness (int) : -100 -100  r<br> color_effects (menu) : 0 -15<br> rotate (int) : 0 -360 <br> color_effects_cbcr (int) : 0 -65535 <br>Codec Controls:<br> video_bitrate_mode (menu): 0 -1 <br> video_bitrate (int): 25000 -25000000 step=25000<br> repeat_sequence_header (bool): <br> h264_i_frame_period (int): 0 -2147483647 <br> h264_level (menu): 0 -11 <br> h264_profile (menu): 0 -4 <br><br>Camera Controls:<br>auto_exposure (menu): 0 -3 <br> exposure_time_absolute (int): 1 -10000<br> exposure_dynamic_framerate (bool): <br> auto_exposure_bias (intmenu): 0 -24 <br> white_balance_auto_preset (menu): 0 -10 <br> image_stabilization (bool): <br> iso_sensitivity (intmenu): 0 -4 <br> iso_sensitivity_auto (menu): 0 -1 <br> exposure_metering_mode (menu): 0 -2 <br> scene_mode (menu): 0 -13 <br><br> JPEG Compression Controls:<br> compression_quality (int): 1 -100 |brightness (int) : 1 -255|Cell 1, Row 1 |
+ubuntu@ubiquityrobot:~$ v4l2-ctl --device /dev/video0 -L
+```
+
+|                 |left               | right           | center               | spare 1      | spare 2         |
+| -------------   | -------------     | -------------   |-------------         |------------- |-------------    |
+| Name            | USB2.0 PC CAMERA  |  webcam: Webcam | Pi camera NOIR 2.1   |GENERAL WEBCAM|Full HD webcam   |
+| Driver name     | uvcvideo          |  uvcvideo       | bm2835 mmal          | uvcvideo     | uvcvideo        |
+| Image Res       | ?????????????     |  2048x1536      | 3280 x 2464          | 1920x1080    | 1920x1080       |
+|Possible controls|  brightness  (int) : 0 -255 <br> contrast  (int) : 0 -255 <br> saturation  (int): 0 -255 <br> hue  (int) : -127 -127 <br>gamma (int) : 1 -8 <br>power_line_frequency  (menu): 0 -2<br>sharpness  (int) : 0 -15 <br>backlight_compensation  (int) : 1 -5 | brightness (int): 1 -255<br> contrast (int): 1 -255<br> saturation (int): 1 -255<br> white_balance_temperature_auto (bool):<br> gain (int): 1 -100<br> power_line_frequency (menu): 0 -2<br> white_balance_temperature (int): 2800 -6500<br> sharpness (int): 1 -255<br> exposure_auto (menu): 0 -3<br> exposure_absolute (int): 5 -2500<br> exposure_auto_priority (bool)|brightness (int) : 0 -100 <br> contrast (int) : -100 -100<br> saturation (int) : -100 -100 <br> red_balance (int) : 1 -7999 <br> blue_balance (int) : 1 -7999<br> horizontal_flip (bool) : <br> vertical_flip (bool) :<br> power_line_frequency (menu) : 0 -3 <br> sharpness (int) : -100 -100  r<br> color_effects (menu) : 0 -15<br> rotate (int) : 0 -360 <br> color_effects_cbcr (int) : 0 -65535 <br>Codec Controls:<br> video_bitrate_mode (menu): 0 -1 <br> video_bitrate (int): 25000 -25000000 step=25000<br> repeat_sequence_header (bool): <br> h264_i_frame_period (int): 0 -2147483647 <br> h264_level (menu): 0 -11 <br> h264_profile (menu): 0 -4 <br><br>Camera Controls:<br>auto_exposure (menu): 0 -3 <br> exposure_time_absolute (int): 1 -10000<br> exposure_dynamic_framerate (bool): <br> auto_exposure_bias (intmenu): 0 -24 <br> white_balance_auto_preset (menu): 0 -10 <br> image_stabilization (bool): <br> iso_sensitivity (intmenu): 0 -4 <br> iso_sensitivity_auto (menu): 0 -1 <br> exposure_metering_mode (menu): 0 -2 <br> scene_mode (menu): 0 -13 <br><br> JPEG Compression Controls:<br> compression_quality (int): 1 -100 |brightness (int) : 1 -255| brightness 0x00980900 (int) : 0 -255 step=1 default=128 value=153<br> contrast (int) : 0 -255<br> saturation (int) : 0 -255<br> hue (int) : 0 -255<br> white_balance_temperature_auto (bool) : <br> gamma (int) : 0 -255<br> gain (int) : 0 -255<br> power_line_frequency (menu) : 0 -2<br> white_balance_temperature (int) : 2800 -6500<br> sharpness (int) : 0 -255<br> backlight_compensation (int) : 0 -2<br> exposure_auto (menu) : 0 -3<br> exposure_absolute (int) : 3 max=2047 |
 
 
 
