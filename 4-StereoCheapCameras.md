@@ -275,7 +275,8 @@ t_z
 
 Which in homegeneus matrix is given by:
 
-$$\begin{equation}
+```math
+\begin{equation}
     \begin{bmatrix}
     X_c \\
     Y_c \\
@@ -294,11 +295,12 @@ $$\begin{equation}
     Z_w \\
     1
     \end{bmatrix} 
-\end{equation}$$
+\end{equation}
+```
 
 The coordinate of a point in the world P on the Sensor plane can be achieved by combining equations (1) and (2):
 
-$$
+```math
 \begin{equation}
     \begin{bmatrix}
     u \\
@@ -327,7 +329,7 @@ $$
     1
     \end{bmatrix} 
 \end{equation} 
-$$
+```
 
 The intrinsic parameters $(f_x,f_y,c_x,c_y)$ can be found after the calibration process and are assumed to be known.
 
