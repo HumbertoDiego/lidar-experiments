@@ -255,7 +255,7 @@ $$
 
 The transformation between the <u>World reference</u> system and the <u>Camera reference</u> is given by:
 
-$$
+```math
 \begin{bmatrix}
 X_c \\
 Y_c \\
@@ -271,7 +271,7 @@ t_x \\
 t_y \\
 t_z
 \end{bmatrix}
-$$
+```
 
 Which in homegeneus matrix is given by:
 
