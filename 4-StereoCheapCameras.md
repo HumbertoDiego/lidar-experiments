@@ -222,7 +222,7 @@ $$
 
 Which in homegeneus matrix is given by:
 
-$$
+```math
 \begin{bmatrix}
     u \\
     v \\
@@ -251,7 +251,7 @@ $$
     Z_c \\
     1
 \end{bmatrix} 
-$$
+```
 
 The transformation between the <u>World reference</u> system and the <u>Camera reference</u> is given by:
 
