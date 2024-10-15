@@ -275,8 +275,7 @@ t_z
 
 Which in homegeneus matrix is given by:
 
-$$
-\begin{equation}
+$$\begin{equation}
     \begin{bmatrix}
     X_c \\
     Y_c \\
@@ -295,8 +294,7 @@ $$
     Z_w \\
     1
     \end{bmatrix} 
-\end{equation} 
-$$
+\end{equation}$$
 
 The coordinate of a point in the world P on the Sensor plane can be achieved by combining equations (1) and (2):
 
