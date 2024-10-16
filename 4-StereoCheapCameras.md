@@ -222,62 +222,60 @@ $$
 
 Which in homegeneus matrix is given by:
 
-$$
-\begin{equation}
+```math
+\begin{bmatrix}
+    u \\\
+    v \\\
+    1
+\end{bmatrix} \equiv Z_c
+\begin{bmatrix}
+    u \\\
+    v \\\
+    1
+\end{bmatrix} =
+\begin{bmatrix}
+    f_xX_c + c_xZ_c \\\
+    f_yY_c + c_yZ_c \\\
+    1
+\end{bmatrix} =
+\underbrace{
     \begin{bmatrix}
-    u \\
-    v \\
+        f_x & 0 & c_x & 0 \\\
+        0 & f_y & c_y & 0 \\\
+        0 & 0 & 1 & 0
+    \end{bmatrix}
+}_{Intrinsic \ parameters \ [K_{3\times 3}|0]}
+\begin{bmatrix}
+    X_c \\\
+    Y_c \\\
+    Z_c \\\
     1
-    \end{bmatrix} \equiv
-    Z_c\begin{bmatrix}
-    u \\
-    v \\
-    1
-    \end{bmatrix} =
-    \begin{bmatrix}
-    f_xX_c + c_xZ_c \\
-    f_yY_c + c_yZ_c \\
-    1
-    \end{bmatrix} =
-    \underbrace{
-        \begin{bmatrix}
-            f_x & 0 & c_x & 0 \\
-            0 & f_y & c_y & 0 \\
-            0 & 0 & 1 & 0
-        \end{bmatrix}
-    }_{Intrinsic \ parameters \ [K_{3\times 3}|0]}
-    \begin{bmatrix}
-    X_c \\
-    Y_c \\
-    Z_c \\
-    1
-    \end{bmatrix} 
-\end{equation} 
-$$
+\end{bmatrix} 
+```
 
 The transformation between the <u>World reference</u> system and the <u>Camera reference</u> is given by:
 
-$$
+```math
 \begin{bmatrix}
-X_c \\
-Y_c \\
+X_c \\\
+Y_c \\\
 Z_c
 \end{bmatrix} = R_{3\times 3}
 \begin{bmatrix}
-X_w \\
-Y_w \\
+X_w \\\
+Y_w \\\
 Z_w
 \end{bmatrix} +
 \begin{bmatrix}
-t_x \\
-t_y \\
+t_x \\\
+t_y \\\
 t_z
 \end{bmatrix}
-$$
+```
 
 Which in homegeneus matrix is given by:
 
-$$
+```math
 \begin{equation}
     \begin{bmatrix}
     X_c \\
@@ -297,12 +295,12 @@ $$
     Z_w \\
     1
     \end{bmatrix} 
-\end{equation} 
-$$
+\end{equation}
+```
 
 The coordinate of a point in the world P on the Sensor plane can be achieved by combining equations (1) and (2):
 
-$$
+```math
 \begin{equation}
     \begin{bmatrix}
     u \\
@@ -331,7 +329,7 @@ $$
     1
     \end{bmatrix} 
 \end{equation} 
-$$
+```
 
 The intrinsic parameters $(f_x,f_y,c_x,c_y)$ can be found after the calibration process and are assumed to be known.
 
