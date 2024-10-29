@@ -223,85 +223,10 @@ The theory can be found at [Simple stereo model and camera calibration process](
 
 |        |PC_CAM_OV1320_V1.1| DH-0918B |Pi camera NOIR 2.1 | FH8852   |
 | -------| -------------    | ---------| -------------     |----------|
-| $f_x$  |  833             | 378      | 473               |  462     |
-| $f_y$  |  824             | 473      | 469               |  462     |
-| $c_x$  |  255             | 185      | 314               |  310     |
-| $c_y$  |  267             | 206      | 239               |  231     |
+| $f_x$  |  2100            | 2175     | 1551              |  1494    |
+| $f_y$  |  2043            | 2164     | 1486              |  1502    |
+| $c_x$  |  636             | 551      | 811               |  944     |
+| $c_y$  |  426             | 765      | 354               |  404     |
 
-## <a name="section-4"></a> 4. Simple Stereo example
-
-Consider the scenario on [1. Cameras arrangement and setup](#section-1). Four pictures taken at the same time from the upper left, upper right, center left and center right cameras:
-
-```shell
-ubuntu@ubiquityrobot:~$ fswebcam --no-banner -S 10 -F 2 --greyscale -s brightness=60% -r 1920x1080 --flip h,v --device /dev/video0 raspfotos/image-video0.jpg & \
-fswebcam --no-banner -S 10 -F 2 --greyscale -s brightness=60% -r 1920x1080 --device /dev/video1 raspfotos/image-video1.jpg & \
-fswebcam --no-banner -S 10 -F 2 --greyscale -s brightness=60% -r 1920x1080 --device /dev/video3 raspfotos/image-video3.jpg & \
-fswebcam --no-banner -S 10 -F 2 --greyscale -s brightness=60% -r 1920x1080 --device /dev/video5 raspfotos/image-video5.jpg
-```
-
-Which generated these images:
-
-<img src="imgs/UL.jpg" height=200><img src="imgs/UR.jpg" height=200>
-
-<img src="imgs/CL.jpg" height=200><img src="imgs/CR.jpg" height=200>
-
-## <a name="section-5"></a> 5. Run OpenCV photo captures in loop
-
-```python
-#!/usr/bin/python3
-import cv2
-import time
-import argparse
-import os
-
-BASE_PHOTO_PATH = '/home/ubuntu/raspfotos'
-
-def list_avaiable_cameras():
-    a = []
-    for port in range(5):
-        cam = cv2.VideoCapture(port)
-        if not cam.isOpened():
-            print(f"Camera {port} is not opened.")
-        else:
-            a.append(port)
-        cam.release()
-    return a
-
-def main(t=60):
-    folder_name = len(os.listdir(BASE_PHOTO_PATH))+1
-    path = f"{BASE_PHOTO_PATH}/{folder_name}"
-    os.mkdir(path)
-
-    cam = []
-    avaiable_cameras = list_avaiable_cameras()
-    for k in avaiable_cameras:
-        cam.append(cv2.VideoCapture(k))
-
-    count = 0
-    t_end = time.time() + t
-    while time.time() < t_end:
-        for i in range(len(cam)):
-            ret, image = cam[i].read()
-            if ret:
-                pic_name = f'{path}/cam{i}_frame{count}.jpg'
-                print(pic_name)
-                cv2.imwrite(pic_name, image)
-        count+=1
-    
-    for i in range(len(cam)):
-        cam[i].release()
-    
-    cv2.destroyAllWindows()
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-s','--segundos',
-                        default=10,
-                        type=int,
-                        help='Add time in seconds')
-    args = parser.parse_args()
-    print(f"Starting taking {args.segundos} seconds of photos.")
-    main(args.segundos)
-```
 
 ## <a name="section-6"></a> 6. Cameras rearrangement
