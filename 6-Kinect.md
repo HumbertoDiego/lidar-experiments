@@ -17,7 +17,7 @@ Requirements:
 
 * Kinect 360
 * Raspiberry Pi model 3b
-* Sd card with [ubuntu-mate-16.04-desktop-armhf-raspberry-pi.img](https://releases.ubuntu-mate.org/archived/16.04/armhf/ubuntu-mate-16.04-desktop-armhf-raspberry-pi.img.xz) installed
+* Sd card with [ubuntu-mate-16.04-desktop-armhf-raspberry-pi.img](https://releases.ubuntu-mate.org/archived/16.04/armhf/) installed
 * Power supply 5V - 3A
 * Internet connection plugged in via Ethernet cable (only initial steps)
 
