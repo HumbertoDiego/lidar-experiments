@@ -15,7 +15,7 @@ Kinect is one of the most popular source of PointClouds - array of points with 3
 
 Requirements:
 
-* Kinect 360º LiDAR
+* Kinect 360
 * Raspiberry Pi model 3b
 * Sd card with [ubuntu-mate-16.04-desktop-armhf-raspberry-pi.img](https://releases.ubuntu-mate.org/archived/16.04/armhf/ubuntu-mate-16.04-desktop-armhf-raspberry-pi.img.xz) installed
 * Power supply 5V - 3A
