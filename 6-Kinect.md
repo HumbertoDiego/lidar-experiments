@@ -38,7 +38,7 @@ sudo nano /etc/network/interfaces
     dns-nameservers 8.8.8.8 8.8.4.4
 ```
 
-To use wifi to act as access point:
+To use wifi to act as access point named `raspAP` with password `raspberry`:
 
 ```shell
 sudo nmcli d wifi hotspot ifname wlan0 ssid raspAP password raspberry
