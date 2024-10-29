@@ -6,8 +6,9 @@ Learning steps for LiDAR usage and its possibilities in conjunction with another
 ## Summary
 
 * [1. Software setup](#section-1)
-    * [1.1 Install ROS on Ubuntu Xenial](#section-11)
-    * [1.2 Install ROS freenect package](#section-12)
+    * [1.1 Raspberry Access Point](#section-11)
+    * [1.2 Install ROS on Ubuntu Xenial](#section-12)
+    * [1.3 Install ROS freenect package](#section-13)
 
 ## <a name="section-1"></a> 1. Software setup
 
@@ -21,7 +22,40 @@ Requirements:
 * Power supply 5V - 3A
 * Internet connection plugged in via Ethernet cable (only initial steps)
 
-### <a name="section-11"></a> 1.1 Install ROS on Ubuntu Xenial
+### <a name="section-11"></a> 1.1 Raspberry Access Point
+
+On Ubuntu Xenial if you want to receive an static IP address every time you connect at a certain network adapter, you will need to add at the bottom of `/etc/network/interfaces`:
+
+```shell
+sudo nano /etc/network/interfaces
+    ##
+    ...
+    auto enxb827eb4e360a
+    iface enxb827eb4e360a inet static
+    address 192.168.1.20
+    netmask 255.255.255.0
+    gateway 192.168.1.1
+    dns-nameservers 8.8.8.8 8.8.4.4
+```
+
+To use wifi to act as access point:
+
+```shell
+sudo nmcli d wifi hotspot ifname wlan0 ssid raspAP password raspberry
+```
+
+To make the access point persistent at every boot add to `etc/rc.local` but before `exit 0`:
+
+```shell
+sudo nano /etc/rc.local
+
+    ##
+    sudo nmcli d wifi hotspot ifname wlan0 ssid raspAP password raspberry
+
+    exit 0
+```
+
+### <a name="section-12"></a> 1.2 Install ROS on Ubuntu Xenial
 
 Configure your Ubuntu repositories to allow "restricted," "universe," and "multiverse." 
 
@@ -58,7 +92,7 @@ echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 ```
 
-### <a name="section-12"></a> 1.2 Install ROS freenect package
+### <a name="section-13"></a> 1.3 Install ROS freenect package
 
 This [package](https://wiki.ros.org/freenect_launch) contains launch files for using a Microsoft Kinect using the [libfreenect](https://openkinect.org/wiki/Getting_Started#Ubuntu/Debian) library.
 
