@@ -25,10 +25,6 @@ Requirements:
 
 Configure your Ubuntu repositories to allow "restricted," "universe," and "multiverse." 
 
-```shell
-
-```
-
 Setup your computer to accept software from packages.ros.org.
 
 ```shell
@@ -49,7 +45,6 @@ sudo apt-get update
 sudo apt-get install ros-kinetic-desktop-full
 # rosinstall and rosdep
 sudo apt install python-rosdep python-rosinstall python-rosinstall-generator python-wstool build-essential
-sudo apt install python-rosdep
 sudo rosdep init
 rosdep update
 # Individual Packages: (replace underscores with dashes of the package name):
