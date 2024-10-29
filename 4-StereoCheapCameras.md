@@ -6,11 +6,9 @@ Learning steps for LiDAR usage and its possibilities in conjunction with another
 ## Summary
 
 * [1. Cameras arrangement and setup](#section-1)
-* [2. Cheap cameras specs](#section-2)
-* [3. Cameras calibration](#section-3)
-* [4. Simple Stereo example](#section-4)
-* [5. Run OpenCV photo caputres in loop](#section-5)
-* [6. Cameras rearrangement](#section-6)
+* [2. Take pictures by command line](#section-2)
+* [3. Cheap cameras specs](#section-3)
+* [4. Cameras calibration](#section-4)
 
 ## <a name="section-1"></a> 1. Cameras arrangement and setup
 
@@ -49,7 +47,38 @@ ubuntu@ubiquityrobot:~$ ip a | grep "inet "
     inet 10.42.0.1/24 brd 10.42.0.255 scope global noprefixroute wlan0
 ```
 
-### Take 1st picture with `fswebcam`
+### SMB folder Share
+
+Create a folder to put your images and share it via smb protocol:
+
+```shell
+ubuntu@ubiquityrobot:~$ cd ~ && mkdir raspfotos/ 
+ubuntu@ubiquityrobot:~$ sudo chmod 777 -R raspfotos/ && sudo chown -R nobody.nogroup raspfotos 
+ubuntu@ubiquityrobot:~$ sudo apt update && sudo apt install samba samba-common-bin
+ubuntu@ubiquityrobot:~$ sudo nano /etc/samba/smb.conf
+# search for and edit
+workgroup = RASPFOTOS
+# Add to the bottom
+[raspfotos]
+    comment = Ubuntu File Server Share
+    path = /home/ubuntu/raspfotos
+    browsable = yes
+    writeable = yes
+    guest ok = yes
+    read only = no
+    create mask = 0777
+    directory mask = 0777
+    public = yes
+ubuntu@ubiquityrobot:~$ sudo service smbd restart
+```
+
+Now access remote folder typing `\\10.42.0.1` on the file path bar of the Windows Explorer or whatever IP address you are accessing your Pi. If you are on Linux, type `smb://10.42.0.1` on the File Explore filepath bar.
+
+<img src="imgs/Explorer.png">
+
+## <a name="section-2"></a> 2. Take pictures by command line
+
+### `fswebcam`
 
 ```shell
 ubuntu@ubiquityrobot:~$ sudo apt update && sudo apt install fswebcam
@@ -72,7 +101,7 @@ Notice the `/dev/video0`, you can choose the camera by change the device name wi
 ubuntu@ubiquityrobot:~$ fswebcam --no-banner --device /dev/video0 image0.jpg
 ```
 
-### Take 1st picture with `ffmeg`
+### `ffmeg`
 
 ```shell
 ubuntu@ubiquityrobot:~$ sudo apt update && sudo apt install ffmpeg
@@ -81,7 +110,7 @@ ubuntu@ubiquityrobot:~$ ffmpeg -y -f v4l2 -video_size 1280x720 -i /dev/video0 -r
 
 The non trivial options of this command are `-r 0.2`: set FPS to 0.2 or 1 frame per 5 seconds,`-qscale:v 2`: set video quality [JPEG quality in this case], 2 is highest quality and `-update 1`: Enable in place update of image file for each video output frame, the ffmpeg command will run until interrupted with Ctrl+c or killed, this option generates better images, instead you can use `-frames:v 1` to generate a single frame file, but the result is more darker in low lights environments. 
 
-### Generate 1st video with `ffmeg`
+To generate a video try:
 
 ```shell
 ubuntu@ubiquityrobot:~$ ffmpeg -y -f v4l2 -r 25 -video_size 640x480 -i /dev/video0 output.mkv
@@ -143,35 +172,6 @@ ubuntu@ubiquityrobot:~$ v4l2-ctl --list-devices
 
 When you find it, remember these paths. They are useful in programs like `fswebcam`, `ffmpeg` or `opencv` to take photos from a specific camera or all of them.
 
-### SMB folder Share
-
-Create a folder to put your images and share it via smb protocol:
-
-```shell
-ubuntu@ubiquityrobot:~$ cd ~ && mkdir raspfotos/ 
-ubuntu@ubiquityrobot:~$ sudo chmod 777 -R raspfotos/ && sudo chown -R nobody.nogroup raspfotos 
-ubuntu@ubiquityrobot:~$ sudo apt update && sudo apt install samba samba-common-bin
-ubuntu@ubiquityrobot:~$ sudo nano /etc/samba/smb.conf
-# search for and edit
-workgroup = RASPFOTOS
-# Add to the bottom
-[raspfotos]
-    comment = Ubuntu File Server Share
-    path = /home/ubuntu/raspfotos
-    browsable = yes
-    writeable = yes
-    guest ok = yes
-    read only = no
-    create mask = 0777
-    directory mask = 0777
-    public = yes
-ubuntu@ubiquityrobot:~$ sudo service smbd restart
-```
-
-Now access remote folder typing `\\10.42.0.1` on the file path bar of the Windows Explorer or whatever IP address you are accessing your Pi. If you are on Linux, type `smb://10.42.0.1` on the File Explore filepath bar.
-
-<img src="imgs/Explorer.png">
-
 ### Run photo captures in loop
 
 ```shell
@@ -200,7 +200,7 @@ fswebcam -r 640x480 --no-banner --device /dev/video3 raspfotos/image-video3.jpg
 
 The total time is almost the same but check the time delta between the `Writing JPEG image to 'raspfotos/image-video0.jpg'.` and `Writing JPEG image to 'raspfotos/image-video3.jpg'.`, they are much closer now. 
 
-## <a name="section-2"></a> 2. Cheap cameras specs
+## <a name="section-3"></a> 3. Cheap cameras specs
 
 ```shell
 # Check possible controls with:
@@ -215,11 +215,9 @@ ubuntu@ubiquityrobot:~$ v4l2-ctl --device /dev/video0 -L
 | Image Res       |  2048x1536       |  1920x1080      | 3280 x 2464       | 1920x1080      |
 |Possible controls <br> at capture time|  brightness (int): 1 -255<br> contrast (int): 1 -255<br> saturation (int): 1 -255<br> white_balance_temperature_auto (bool):<br> gain (int): 1 -100<br> power_line_frequency (menu): 0 -2<br> white_balance_temperature (int): 2800 -6500<br> sharpness (int): 1 -255<br> exposure_auto (menu): 0 -3<br> exposure_absolute (int): 5 -2500<br> exposure_auto_priority (bool)| brightness  (int) : 0 -255 <br> contrast  (int) : 0 -255 <br> saturation  (int): 0 -255 <br> hue  (int) : -127 -127 <br>gamma (int) : 1 -8 <br>power_line_frequency  (menu): 0 -2<br>sharpness  (int) : 0 -15 <br>backlight_compensation  (int) : 1 -5  |brightness (int) : 0 -100 <br> contrast (int) : -100 -100<br> saturation (int) : -100 -100 <br> red_balance (int) : 1 -7999 <br> blue_balance (int) : 1 -7999<br> horizontal_flip (bool) : <br> vertical_flip (bool) :<br> power_line_frequency (menu) : 0 -3 <br> sharpness (int) : -100 -100  r<br> color_effects (menu) : 0 -15<br> rotate (int) : 0 -360 <br> color_effects_cbcr (int) : 0 -65535 <br>Codec Controls:<br> video_bitrate_mode (menu): 0 -1 <br> video_bitrate (int): 25000 -25000000 step=25000<br> repeat_sequence_header (bool): <br> h264_i_frame_period (int): 0 -2147483647 <br> h264_level (menu): 0 -11 <br> h264_profile (menu): 0 -4 <br><br>Camera Controls:<br>auto_exposure (menu): 0 -3 <br> exposure_time_absolute (int): 1 -10000<br> exposure_dynamic_framerate (bool): <br> auto_exposure_bias (intmenu): 0 -24 <br> white_balance_auto_preset (menu): 0 -10 <br> image_stabilization (bool): <br> iso_sensitivity (intmenu): 0 -4 <br> iso_sensitivity_auto (menu): 0 -1 <br> exposure_metering_mode (menu): 0 -2 <br> scene_mode (menu): 0 -13 <br><br> JPEG Compression Controls:<br> compression_quality (int): 1 -100 | brightness 0x00980900 (int) : 0 -255 step=1 default=128 value=153<br> contrast (int) : 0 -255<br> saturation (int) : 0 -255<br> hue (int) : 0 -255<br> white_balance_temperature_auto (bool) : <br> gamma (int) : 0 -255<br> gain (int) : 0 -255<br> power_line_frequency (menu) : 0 -2<br> white_balance_temperature (int) : 2800 -6500<br> sharpness (int) : 0 -255<br> backlight_compensation (int) : 0 -2<br> exposure_auto (menu) : 0 -3<br> exposure_absolute (int) : 3 max=2047 |
 
+## <a name="section-4"></a> 4. Cameras calibration
 
-
-## <a name="section-3"></a> 3. Cameras calibration
-
-The theory can be found at [Simple stereo model and camera calibration process](Theory01-SimpleStereo.ipynb). Here we present the camera intrinsinc parameters of each one used:
+The theory can be found at [Simple stereo model and camera calibration process](Theory-SimpleStereo.ipynb). Here we present the camera intrinsinc parameters of each one used:
 
 |        |PC_CAM_OV1320_V1.1| DH-0918B |Pi camera NOIR 2.1 | FH8852   |
 | -------| -------------    | ---------| -------------     |----------|
@@ -227,6 +225,3 @@ The theory can be found at [Simple stereo model and camera calibration process](
 | $f_y$  |  2043            | 2164     | 1486              |  1502    |
 | $c_x$  |  636             | 551      | 811               |  944     |
 | $c_y$  |  426             | 765      | 354               |  404     |
-
-
-## <a name="section-6"></a> 6. Cameras rearrangement
