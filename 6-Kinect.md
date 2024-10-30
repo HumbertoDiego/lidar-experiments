@@ -44,6 +44,8 @@ To use wifi to act as access point named `raspAP` with password `raspberry`:
 sudo nmcli d wifi hotspot ifname wlan0 ssid raspAP password raspberry
 ```
 
+The command place the raspberry as a router with IP 10.42.0.1 and also as a DHCP server assigning IPs to conected decices.
+
 To make the access point persistent at every boot add to `etc/rc.local` but before `exit 0`:
 
 ```shell
@@ -53,6 +55,13 @@ sudo nano /etc/rc.local
     sudo nmcli d wifi hotspot ifname wlan0 ssid raspAP password raspberry
 
     exit 0
+```
+
+To use ethernet cable between raspberry and other computer to increase baudrate, try this:
+
+```shell
+nmcli connection add type ethernet ifname enxb827eb4e360a con-name mycon ipv4.method shared
+sudo nmcli c up mycon
 ```
 
 ### <a name="section-12"></a> 1.2 Install ROS on Ubuntu Xenial
