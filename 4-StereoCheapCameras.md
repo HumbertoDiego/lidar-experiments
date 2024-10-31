@@ -101,20 +101,43 @@ Notice the `/dev/video0`, you can choose the camera by change the device name wi
 ubuntu@ubiquityrobot:~$ fswebcam --no-banner --device /dev/video0 image0.jpg
 ```
 
+
+
 ### `ffmeg`
 
 ```shell
 ubuntu@ubiquityrobot:~$ sudo apt update && sudo apt install ffmpeg
-ubuntu@ubiquityrobot:~$ ffmpeg -y -f v4l2 -video_size 1280x720 -i /dev/video0 -r 0.2 -qscale:v 2 -update 1 ~/webcam.jpg
+ubuntu@ubiquityrobot:~$ ffmpeg -y -video_size 1280x720 -i /dev/video0 -update 1 ~/webcam.jpg
 ```
 
-The non trivial options of this command are `-r 0.2`: set FPS to 0.2 or 1 frame per 5 seconds,`-qscale:v 2`: set video quality [JPEG quality in this case], 2 is highest quality and `-update 1`: Enable in place update of image file for each video output frame, the ffmpeg command will run until interrupted with Ctrl+c or killed, this option generates better images, instead you can use `-frames:v 1` to generate a single frame file, but the result is more darker in low lights environments. 
+`-update 1`: Enable in place update of image file for each video output frame, the ffmpeg command will run until interrupted with Ctrl+c or killed, this option generates better images, instead you can use `-frames:v 1` to generate a single frame file, but the result is more darker in low lights environments. 
 
 To generate a video try:
 
 ```shell
-ubuntu@ubiquityrobot:~$ ffmpeg -y -f v4l2 -r 25 -video_size 640x480 -i /dev/video0 output.mkv
+ubuntu@ubiquityrobot:~$ ffmpeg -f v4l2 -framerate 10 -i /dev/video0 -c:v libx264 -t 20 -r 10 -pix_fmt yuv420p -s 640x480 raspfotos/output.mp4
+...
+frame=74 fps=13 q=25.0 size=0kB time=00:00:02.10 bitrate=0.2kbits/s dup=0 drop=98 speed=0.359x
+...
+frame=125 fps=11 q=25.0 size=256kB time=00:00:07.20 bitrate=291.3kbits/s dup=0 drop=172 speed=0.659x
+...
+frame=200 fps=9.6 q=-1.0 Lsize=1135kB time=00:00:19.70 bitrate=472.0kbits/s dup=0 drop=282 speed=0.947x
+...
 ```
+
+The options are:
+
+- `-f v4l2` specifies the video input format. `v4l2` is the standard for video capture devices on Linux.
+- `-t 20` limits the recording duration to 20 seconds.
+- `-i /dev/video0` sets the video input source. `video0` is usually the default webcam device. Replace this with the correct device path if different.
+- `-c:v libx264` uses the H.264 codec for video encoding.
+- `-pix_fmt yuv420p` ensures compatibility with a wide range of players.
+- `output.mp4` is the name of the output file.
+- `-framerate 10` before the input device specifies the frame rate of the input device to 30 frames per second (fps). Adjust this to match your device’s frame rate capability (common frame rates are 15, 24, or 30 fps).
+- `-r 10` after the input device sets the output video frame rate to 30 fps, which should match the input frame rate for smooth playback.
+- `-s 640x480` sets the resolution to 640x480 pixels.
+
+Check the relatively steady (desired) 10 fps at 640x480. Trying to increase resolution to 1920x1080 lead to near 3 fps and a lag video. It all depends on the underlying hardware.
 
 ### Stream the camera over network with `v4l2rtspserver`
 
@@ -187,18 +210,34 @@ Check the program above. We are saving the photos names with the device path. No
 ubuntu@ubiquityrobot:~$ for device in $(ls /dev | grep video); do fswebcam --no-banner --device /dev/$device raspfotos/image-$device.jpg; done
 ```
 
-You will notice here, the long time to take bad resolution pictures. Next work is running these commands in parallel and set de resolution to a commom denominator of the cameras. Let's say 640x480.
+### Run video captures in parallel
+
+Write this code into `capturevideos.sh` file:
 
 ```shell
-# sequential photos
-ubuntu@ubiquityrobot:~$ for device in video0 video1 video3; do fswebcam -r 640x480 --no-banner --device /dev/$device raspfotos/image-$device.jpg ; done
-# parallel photos
-ubuntu@ubiquityrobot:~$ fswebcam -r 640x480 --no-banner --device /dev/video0 raspfotos/image-video0.jpg & \
-fswebcam -r 640x480 --no-banner --device /dev/video1 raspfotos/image-video1.jpg & \
-fswebcam -r 640x480 --no-banner --device /dev/video3 raspfotos/image-video3.jpg 
+#!/bin/bash
+FPS=10
+TIME=20
+INOPTIONS="-hide_banner -f v4l2 -framerate $FPS"
+OUTOPTIONS="-c:v libx264 -t $TIME -r $FPS -pix_fmt yuv420p -s 640x480"
+# Capture videos from multiple devices in parallel
+ffmpeg $INOPTIONS -i /dev/video0 $OUTOPTIONS -loglevel quiet raspfotos/output0.mp4 & 
+ffmpeg $INOPTIONS -i /dev/video1 $OUTOPTIONS -loglevel quiet raspfotos/output1.mp4 & 
+ffmpeg $INOPTIONS -i /dev/video3 $OUTOPTIONS -loglevel quiet raspfotos/output3.mp4 & 
+ffmpeg $INOPTIONS -i /dev/video5 $OUTOPTIONS -loglevel info raspfotos/output5.mp4
+# Wait for all background processes to finish
+wait
+echo "Video capture completed!"
 ```
 
-The total time is almost the same but check the time delta between the `Writing JPEG image to 'raspfotos/image-video0.jpg'.` and `Writing JPEG image to 'raspfotos/image-video3.jpg'.`, they are much closer now. 
+Give execution permissions and run it:
+
+```shell
+ubuntu@ubiquityrobot:~$ chmod +x capture_videos.sh
+ubuntu@ubiquityrobot:~$ ./capture_videos.sh
+```
+
+Here, we stdout only the log of the last device. Check the decrease in nominal fps at the end when all cameras are on and buggy 1 sec files generated at random runs. In general, Raspberry Pi 3B had better generated files when handling only 2 cameras.
 
 ## <a name="section-3"></a> 3. Cheap cameras specs
 
@@ -225,3 +264,6 @@ The theory can be found at [Simple stereo model and camera calibration process](
 | $f_y$  |  2043            | 2164     | 1486              |  1502    |
 | $c_x$  |  636             | 551      | 811               |  944     |
 | $c_y$  |  426             | 765      | 354               |  404     |
+
+
+
