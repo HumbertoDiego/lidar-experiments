@@ -133,8 +133,8 @@ The options are:
 - `-c:v libx264` uses the H.264 codec for video encoding.
 - `-pix_fmt yuv420p` ensures compatibility with a wide range of players.
 - `output.mp4` is the name of the output file.
-- `-framerate 10` before the input device specifies the frame rate of the input device to 30 frames per second (fps). Adjust this to match your device’s frame rate capability (common frame rates are 15, 24, or 30 fps).
-- `-r 10` after the input device sets the output video frame rate to 30 fps, which should match the input frame rate for smooth playback.
+- `-framerate 10` before the input device specifies the frame rate of the input device to 10 frames per second (fps). Adjust this to match your device’s frame rate capability (common frame rates are 15, 24, or 30 fps).
+- `-r 10` after the input device sets the output video frame rate to 10 fps, which should match the input frame rate for smooth playback.
 - `-s 640x480` sets the resolution to 640x480 pixels.
 
 Check the relatively steady (desired) 10 fps at 640x480. Trying to increase resolution to 1920x1080 lead to near 3 fps and a lag video. It all depends on the underlying hardware.
