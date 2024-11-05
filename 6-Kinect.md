@@ -9,6 +9,9 @@ Learning steps for LiDAR usage and its possibilities in conjunction with another
     * [1.1 Raspberry Access Point](#section-11)
     * [1.2 Install ROS on Ubuntu Xenial](#section-12)
     * [1.3 Install ROS freenect package](#section-13)
+* [2. Run freenect](#section-2)
+* [3. Launch ROS kinetic freenect](#section-3)
+* [4. Run applications through Virtual Machine](#section-4)
 
 ## <a name="section-1"></a> 1. Software setup
 
@@ -57,12 +60,14 @@ sudo nano /etc/rc.local
     exit 0
 ```
 
-To use ethernet cable between raspberry and other computer to increase baudrate, try this:
+<!-- 
+Optionnaly, use ethernet cable between raspberry and other computer to increase baudrate:
 
 ```shell
 nmcli connection add type ethernet ifname enxb827eb4e360a con-name mycon ipv4.method shared
 sudo nmcli c up mycon
 ```
+-->
 
 ### <a name="section-12"></a> 1.2 Install ROS on Ubuntu Xenial
 
@@ -132,6 +137,13 @@ roslaunch freenect_launch freenect.launch
 rviz
 ```
 
+You should see a very lag 
+
+## <a name="section-2"></a> 2. Run freenect
+
+## <a name="section-3"></a> 3. Launch ROS kinetic freenect
+
+## <a name="section-4"></a> 4. Run applications through Virtual Machine
 
 <!-- 
 git init
