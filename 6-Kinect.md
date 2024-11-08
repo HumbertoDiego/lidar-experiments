@@ -385,7 +385,7 @@ We will subscribe to these topics later: `/camera/rgb/image_color` and `/camera/
 
 ## <a name="section-3"></a> 3. Run applications through Virtual Machine
 
-An easy way to install updated version of ROS that listen to our annoucer is by a virtual machine. Install Virtual Box. Get an Ubuntu 20 image. Then install ROS Noetic on it.
+An easy way to install updated version of ROS that listen to our annoucer is by a virtual machine. Install Virtual Box. Get an [Ubuntu](https://ubuntu.com/download/desktop) image. Then install ROS Noetic on it.
 
 ```shell
 ub20@ub20-VM:~$ sudo wget -c https://raw.githubusercontent.com/qboticslabs/ros_install_noetic/master/ros_install_noetic.sh && chmod +x ./ros_install_noetic.sh && ./ros_install_noetic.sh
