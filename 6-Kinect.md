@@ -11,6 +11,8 @@ Learning steps for LiDAR usage and its possibilities in conjunction with another
     * [1.3 Install ROS freenect package](#section-13)
 * [2. Launch ROS kinetic freenect](#section-2)
 * [3. Run applications through Virtual Machine](#section-3)
+    * [3.1 Run a subscriber](#section-31)
+    * [3.2 Save data to posterior analisys](#section-32)
 
 ## <a name="section-1"></a> 1. Software setup
 
