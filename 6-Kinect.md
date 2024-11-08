@@ -446,7 +446,9 @@ ub20@ub20-VM:~$ rqt_image_view
 
 <img src="imgs/kinectRGB.png">
 
-<img src="imgs/kinectDepth.png">
+<img src="imgs/kinectdepth.png">
+
+## <a name="section-31"></a> 3.1 Run a subscriber
 
 The depth topic send Image data type messages that has this structure (you can experiment check the authors page for more details):
 
@@ -475,6 +477,7 @@ uint8 is_bigendian    # is this data bigendian?
 uint32 step           # Full row length in bytes
 uint8[] data          # actual matrix data, size is (step * rows)
 ```
+
 To convert the data vector into an actual matrix would be painfull, but OpenCV already has a nice implementaiton of it, so we can got to our last step:
 
 3rd run a subscriber to change data on the fly:
@@ -484,7 +487,6 @@ To convert the data vector into an actual matrix would be painfull, but OpenCV a
 import cv2
 import rospy
 from sensor_msgs.msg import Image
-
 from cv_bridge import CvBridge
 bridge = CvBridge()
 
@@ -513,6 +515,37 @@ ub20@ub20-VM:~$ ./subscriber.py
 
 <img src="imgs/kinectsubscriber.png">
 
+## <a name="section-32"></a> 3.2 Save data to posterior analisys
+
+A simple subscriber can do this job:
+
+```python
+#!/usr/bin/python3
+import cv2
+import rospy
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge
+bridge = CvBridge()
+import numpy as np
+
+frame = 0
+def callback(data):
+    global frame
+    cv_image = bridge.imgmsg_to_cv2(data, desired_encoding='passthrough')
+    filename = "depth_{frame:02d}.npy"
+    np.savetxt(filename, cv_image)
+    frame += 1
+    print(f"Saved {filename}")
+
+def listener():
+    rospy.init_node('listener', anonymous=True)
+    rospy.Subscriber("/camera/depth/image_raw" , Image, callback)
+    rospy.spin()
+    cv2.destroyAllWindows()
+
+if __name__ == '__main__':
+    listener()
+```
 
 <!-- 
 git init
