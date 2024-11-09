@@ -43,7 +43,7 @@ Requirements:
 * Power supply 5V - 3A
 * Internet connection plugged in via Ethernet cable (only initial steps)
 
-### <a name="section-11"></a> 1.1 Raspberry Access Point
+### <a name="section-21"></a> 2.1 Raspberry Access Point
 
 On Ubuntu Xenial if you want to receive an static IP address every time you connect at a certain network adapter, you will need to add at the bottom of `/etc/network/interfaces`:
 
