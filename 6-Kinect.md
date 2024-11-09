@@ -1,28 +1,45 @@
 # LiDAR-experiments
 Learning steps for LiDAR usage and its possibilities in conjunction with another sensors
 
-# Kinect
+# Kinect 360
 
 ## Summary
 
-* [1. Software setup](#section-1)
-    * [1.1 Raspberry Access Point](#section-11)
-    * [1.2 Install ROS on Ubuntu Xenial](#section-12)
-    * [1.3 Install ROS freenect package](#section-13)
-* [2. Launch ROS kinetic freenect](#section-2)
-* [3. Run applications through Virtual Machine](#section-3)
-    * [3.1 Run a subscriber](#section-31)
-    * [3.2 Save data to posterior analisys](#section-32)
+* [1. Kinect 360 (v1) Presentation](#section-1)
+* [2. Software setup](#section-1)
+    * [2.1 Raspberry Access Point](#section-21)
+    * [2.2 Install ROS on Ubuntu Xenial](#section-22)
+    * [2.3 Install ROS freenect package](#section-23)
+* [3. Launch ROS kinetic freenect](#section-3)
+* [4. Run applications through Virtual Machine](#section-4)
+    * [4.1 Run a subscriber](#section-41)
+    * [4.2 Save data to posterior analisys](#section-42)
 
-## <a name="section-1"></a> 1. Software setup
 
-Kinect is one of the most popular source of PointClouds - array of points with 3D coordinates information. It has proprietary connector - actually it's USB+12V bus, and needs adapter for PC connection Despite that Kinect is bigger than ASUS Xtion, it has also tilt motor, microphone array, accelerometer and better support from ROS community. 
+## <a name="section-1"></a> 1. Kinect 360 (v1) Presentation
+
+Kinect is one of the most popular source of PointClouds - array of points with 3D coordinates information. It has proprietary connector - actually it's USB+12V bus, and needs adapter for PC connection Despite that Kinect is bigger than ASUS Xtion, it has also tilt motor, microphone array, accelerometer and better support from ROS community.
+
+<img src="imgs/kinectlabel.jpg">
+
+The depth sensor is the star here. It works with a Infra-Red (IR) dot pattern emmiter in conjuntion with an IR camera sensor. The well defined baseline betwen these two sensor combined with easy homologue points recognitions make depths calculations more precise. It has heavy interference on pattern recognition with direct sunlight make it suitable for indoors only.
+
+Some rough estimates of the accuracy of the depth sensor:
+
+- Range: ~ 50 cm to 5 m. Can get closer (~ 40 cm) in parts, but can’t have the full view be < 50 cm.
+- Horizontal Resolution: 640 x 480 and 45 degrees vertical Field of View (FOV) and 58 degrees horizontal FOV. ~ 0.75 mm per pixel at 50 cm, and ~ 3 mm per pixel at 2 m.
+- Depth resolution: ~ 1.5 mm at 50 cm. About 5 cm at 5 m.
+- Noise: About +-1 DN at all depths, but DN to depth is non-linear. This means +-1 mm close, and +- 5 cm far
+
+## <a name="section-2"></a> 2. Software setup
+
+
 
 Requirements:
 
 * Kinect 360
 * Raspiberry Pi model 3b
-* Sd card with [ubuntu-mate-16.04-desktop-armhf-raspberry-pi.img](https://releases.ubuntu-mate.org/archived/16.04/armhf/) installed
+* Sd card with [ubuntu-mate-16.04-desktop-armhf-raspberry-pi.img](https://releases.ubuntu-mate.org/archived/16.04/armhf/) installed. (Here we set `ubuntu:ubuntu` as username and password for simplicity, you can change as you wish)
 * Power supply 5V - 3A
 * Internet connection plugged in via Ethernet cable (only initial steps)
 
@@ -70,7 +87,7 @@ sudo nmcli c up mycon
 ```
 -->
 
-### <a name="section-12"></a> 1.2 Install ROS on Ubuntu Xenial
+### <a name="section-22"></a> 2.2 Install ROS on Ubuntu Xenial
 
 Configure your Ubuntu repositories to allow "restricted," "universe," and "multiverse." 
 
@@ -107,7 +124,7 @@ echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 ```
 
-### <a name="section-13"></a> 1.3 Install ROS freenect package
+### <a name="section-23"></a> 2.3 Install ROS freenect package
 
 This [package](https://wiki.ros.org/freenect_launch) contains launch files for using a Microsoft Kinect using the [libfreenect](https://openkinect.org/wiki/Getting_Started#Ubuntu/Debian) library.
 
@@ -140,7 +157,7 @@ rviz
 
 You should see a very lag 
 
-## <a name="section-2"></a> 2. Launch ROS kinetic freenect
+## <a name="section-3"></a> 3. Launch ROS kinetic freenect
 
 Remember we have setup an access point with our Raspberry? Now it's time. Connect to it:
 
@@ -163,6 +180,8 @@ Now your PC and Raspberry are in the same network you can SSH into it , check en
 ```shell
 > ssh ubuntu@10.42.0.1
 ubuntu@10.42.0.1's password: 
+```
+```shell
 ubuntu@ubuntu-desktop:~$ env | grep ROS
 ROS_ROOT=/opt/ros/kinetic/share/ros
 ROS_PACKAGE_PATH=/opt/ros/kinetic/share
@@ -383,7 +402,7 @@ ubuntu@ubuntu-desktop:~$ rostopic list
 
 We will subscribe to these topics later: `/camera/rgb/image_color` and `/camera/depth/image_raw`.
 
-## <a name="section-3"></a> 3. Run applications through Virtual Machine
+## <a name="section-4"></a> 4. Run applications through Virtual Machine
 
 An easy way to install updated version of ROS that listen to our annoucer is by a virtual machine. Install Virtual Box. Get an [Ubuntu](https://ubuntu.com/download/desktop) image. Then install ROS Noetic on it.
 
@@ -450,7 +469,7 @@ ub20@ub20-VM:~$ rqt_image_view
 
 <img src="imgs/kinectdepth.png">
 
-## <a name="section-31"></a> 3.1 Run a subscriber
+## <a name="section-41"></a> 4.1 Run a subscriber
 
 The depth topic send Image data type messages that has this structure (you can experiment check the authors page for more details):
 
@@ -517,7 +536,7 @@ ub20@ub20-VM:~$ ./subscriber.py
 
 <img src="imgs/kinectsubscriber.png">
 
-## <a name="section-32"></a> 3.2 Save data to posterior analisys
+## <a name="section-42"></a> 4.2 Save data to posterior analisys
 
 A simple subscriber can do this job:
 
