@@ -101,8 +101,6 @@ Notice the `/dev/video0`, you can choose the camera by change the device name wi
 ubuntu@ubiquityrobot:~$ fswebcam --no-banner --device /dev/video0 image0.jpg
 ```
 
-
-
 ### `ffmeg`
 
 ```shell
@@ -159,6 +157,29 @@ ubuntu@ubiquityrobot:~$  ps -aux | grep v4l2rtspserver
 ubuntu   14704  ...  v4l2rtspserver
 ubuntu@ubiquityrobot:~$ sudo kill 14704
 ```
+
+### Stream the camera over network with `raspivid_mjpeg_server`
+
+A better way to run a web server for our cameras and with low lattency is [raspivid_mjpeg_server](https://github.com/kig/raspivid_mjpeg_server), install and run the package with:
+
+```shell
+# Install Rust if needed
+ubuntu@ubiquityrobot:~$ curl https://sh.rustup.rs -sSf | sh
+ubuntu@ubiquityrobot:~$ . ~/.cargo/env 
+
+# Clone the repo and start the server (Rust will build automatically ~12min)
+ubuntu@ubiquityrobot:~$ git clone https://github.com/kig/raspivid_mjpeg_server
+ubuntu@ubiquityrobot:~$ cd raspivid_mjpeg_server
+ubuntu@ubiquityrobot:~/raspivid_mjpeg_server$ $ raspivid -ISO 0 -t 0 -n -o - -w 1280 -h 720 -fps 25 -b 25000000 -cd MJPEG | cargo run --release
+...
+   Compiling hyper v0.13.5
+   Compiling raspivid_mjpeg_server v0.2.0 (/home/ubuntu/raspivid_mjpeg_server)
+    Finished `release` profile [optimized] target(s) in 5m 42s
+     Running `target/release/raspivid_mjpeg_server`
+Listening on http://0.0.0.0:8554
+```
+
+Open [http://10.42.0.1:8554/video.mjpg](http://10.42.0.1:8554/video.mjpg). Kill with Ctrl+c.
 
 ### Check device path of your cameras
 
