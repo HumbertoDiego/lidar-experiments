@@ -447,7 +447,6 @@ The theory can be found at [Simple stereo model and camera calibration process](
 | $c_x$  |  636             | 551      | 811               |  944     |
 | $c_y$  |  426             | 765      | 354               |  404     |
 
-
 <!-- 
 git init
 git remote add origin https://github.com/HumbertoDiego/lidar-experiments
