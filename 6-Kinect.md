@@ -11,7 +11,7 @@ Learning steps for LiDAR usage and its possibilities in conjunction with another
     * [2.2 Install ROS on Ubuntu Xenial](#section-22)
     * [2.3 Install ROS freenect package](#section-23)
 * [3. Launch ROS kinetic freenect](#section-3)
-* [4. Run applications through Virtual Machine](#section-4)
+* [4. Run a ROS subscriber through Virtual Machine](#section-4)
     * [4.1 Run a subscriber](#section-41)
     * [4.2 Save data to posterior analisys](#section-42)
 
@@ -402,7 +402,7 @@ ubuntu@ubuntu-desktop:~$ rostopic list
 
 We will subscribe to these topics later: `/camera/rgb/image_color` and `/camera/depth/image_raw`.
 
-## <a name="section-4"></a> 4. Run applications through Virtual Machine
+## <a name="section-4"></a> 4. Run ROS subscriber through Virtual Machine
 
 An easy way to install updated version of ROS that listen to our annoucer is by a virtual machine. Install Virtual Box. Get an [Ubuntu](https://ubuntu.com/download/desktop) image. Then install ROS Noetic on it.
 

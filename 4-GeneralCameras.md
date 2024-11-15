@@ -1,14 +1,16 @@
 # LiDAR-experiments
 Learning steps for LiDAR usage and its possibilities in conjunction with another sensors
 
-# Stereo Cheap Cameras
+# General Cameras
 
 ## Summary
 
 * [1. Cameras arrangement and setup](#section-1)
 * [2. Take pictures by command line](#section-2)
 * [3. Cheap cameras specs](#section-3)
-* [4. Cameras calibration](#section-4)
+* [4. ROS publisher for camera](#section-4)
+* [5. ROS subscriber through Virtual Machine](#section-5)
+* [6. Cameras calibration](#section-6)
 
 ## <a name="section-1"></a> 1. Cameras arrangement and setup
 
@@ -275,7 +277,166 @@ ubuntu@ubiquityrobot:~$ v4l2-ctl --device /dev/video0 -L
 | Image Res       |  2048x1536       |  1920x1080      | 3280 x 2464       | 1920x1080      |
 |Possible controls <br> at capture time|  brightness (int): 1 -255<br> contrast (int): 1 -255<br> saturation (int): 1 -255<br> white_balance_temperature_auto (bool):<br> gain (int): 1 -100<br> power_line_frequency (menu): 0 -2<br> white_balance_temperature (int): 2800 -6500<br> sharpness (int): 1 -255<br> exposure_auto (menu): 0 -3<br> exposure_absolute (int): 5 -2500<br> exposure_auto_priority (bool)| brightness  (int) : 0 -255 <br> contrast  (int) : 0 -255 <br> saturation  (int): 0 -255 <br> hue  (int) : -127 -127 <br>gamma (int) : 1 -8 <br>power_line_frequency  (menu): 0 -2<br>sharpness  (int) : 0 -15 <br>backlight_compensation  (int) : 1 -5  |brightness (int) : 0 -100 <br> contrast (int) : -100 -100<br> saturation (int) : -100 -100 <br> red_balance (int) : 1 -7999 <br> blue_balance (int) : 1 -7999<br> horizontal_flip (bool) : <br> vertical_flip (bool) :<br> power_line_frequency (menu) : 0 -3 <br> sharpness (int) : -100 -100  r<br> color_effects (menu) : 0 -15<br> rotate (int) : 0 -360 <br> color_effects_cbcr (int) : 0 -65535 <br>Codec Controls:<br> video_bitrate_mode (menu): 0 -1 <br> video_bitrate (int): 25000 -25000000 step=25000<br> repeat_sequence_header (bool): <br> h264_i_frame_period (int): 0 -2147483647 <br> h264_level (menu): 0 -11 <br> h264_profile (menu): 0 -4 <br><br>Camera Controls:<br>auto_exposure (menu): 0 -3 <br> exposure_time_absolute (int): 1 -10000<br> exposure_dynamic_framerate (bool): <br> auto_exposure_bias (intmenu): 0 -24 <br> white_balance_auto_preset (menu): 0 -10 <br> image_stabilization (bool): <br> iso_sensitivity (intmenu): 0 -4 <br> iso_sensitivity_auto (menu): 0 -1 <br> exposure_metering_mode (menu): 0 -2 <br> scene_mode (menu): 0 -13 <br><br> JPEG Compression Controls:<br> compression_quality (int): 1 -100 | brightness 0x00980900 (int) : 0 -255 step=1 default=128 value=153<br> contrast (int) : 0 -255<br> saturation (int) : 0 -255<br> hue (int) : 0 -255<br> white_balance_temperature_auto (bool) : <br> gamma (int) : 0 -255<br> gain (int) : 0 -255<br> power_line_frequency (menu) : 0 -2<br> white_balance_temperature (int) : 2800 -6500<br> sharpness (int) : 0 -255<br> backlight_compensation (int) : 0 -2<br> exposure_auto (menu) : 0 -3<br> exposure_absolute (int) : 3 max=2047 |
 
-## <a name="section-4"></a> 4. Cameras calibration
+## <a name="section-4"></a> 4. ROS publisher for camera
+
+Create a ROS Package dir `~/camera_ws`:
+
+```shell
+ubuntu@ubiquityrobot:~$ mkdir -p ~/camera_ws/src/camera_publisher/scripts
+ubuntu@ubiquityrobot:~$ cd ~/camera_ws/src
+ubuntu@ubiquityrobot:~$ catkin_create_pkg camera_publisher rospy std_msgs sensor_msgs cv_bridge
+```
+
+Write the Camera Publisher Script:
+
+```shell
+ubuntu@ubiquityrobot:~$ cd ~/camera_ws/src/camera_publisher/scripts
+ubuntu@ubiquityrobot:~$ touch camera_publisher.py
+ubuntu@ubiquityrobot:~$ chmod +x camera_publisher.py
+```
+
+Edit the script (`camera_publisher.py`) with the following content:
+
+```Python
+#!/usr/bin/env python3
+import rospy
+import cv2
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge
+
+def camera_publisher():
+    # Initialize the ROS node
+    rospy.init_node('camera_publisher', anonymous=True)
+    # Create a publisher for the Image topic
+    image_pub = rospy.Publisher('/camera/image_raw', Image, queue_size=10)
+    # Create a CvBridge object
+    bridge = CvBridge()
+
+    # Open the default camera
+    cap = cv2.VideoCapture(0)
+
+    # Check if the camera opened successfully
+    if not cap.isOpened():
+        rospy.logerr("Failed to open the camera!")
+        return
+
+    rospy.loginfo("Camera publisher started.")
+
+    rate = rospy.Rate(10)  # 10 Hz
+    while not rospy.is_shutdown():
+        # Capture a frame from the camera
+        ret, frame = cap.read()
+        if not ret:
+            rospy.logwarn("Failed to capture a frame!")
+            continue
+
+        # Convert the OpenCV image to a ROS Image message
+        image_msg = bridge.cv2_to_imgmsg(frame, encoding="bgr8")
+
+        # Publish the image message
+        image_pub.publish(image_msg)
+
+        # Sleep to maintain the rate
+        rate.sleep()
+
+    # Release the camera when done
+    cap.release()
+
+if __name__ == '__main__':
+    try:
+        camera_publisher()
+    except rospy.ROSInterruptException:
+        pass
+```
+
+Build your catkin workspace:
+
+```shell
+ubuntu@ubiquityrobot:~$ cd ~/camera_ws && catkin_make
+ubuntu@ubiquityrobot:~$ cd ~/camera_ws && source devel/setup.bash
+ubuntu@ubiquityrobot:~$ echo "source ~/camera_ws/devel/setup.bash" >> ~/.bashrc
+```
+
+Run the camera publisher node:
+
+```shell
+ubuntu@ubiquityrobot:~$ rosrun camera_publisher camera_publisher.py
+[INFO] [1731688405.271017]: Camera publisher started.
+```
+
+Verify the topic is being published:
+
+```shell
+ubuntu@ubiquityrobot:~$ rostopic list
+/camera/image_raw
+...
+```
+
+## <a name="section-5"></a> 5. ROS subscriber through Virtual Machine
+
+An easy way to install updated version of ROS that listen to our publisher is by a virtual machine. Install Virtual Box. Get an [Ubuntu](https://ubuntu.com/download/desktop) image. Then install ROS Noetic on it.
+
+```shell
+ub20@ub20-VM:~$ sudo wget -c https://raw.githubusercontent.com/qboticslabs/ros_install_noetic/master/ros_install_noetic.sh && chmod +x ./ros_install_noetic.sh && ./ros_install_noetic.sh
+```
+
+Correct the environment variables of our VM:
+
+```shell
+ub20@ub20-VM:~$ echo "export ROS_IP=10.42.0.1" >> ~/.bashrc
+ub20@ub20-VM:~$ echo "export ROS_MASTER_URI=http://10.42.0.1:11311" >> ~/.bashrc
+ub20@ub20-VM:~$ source ~/.bashrc
+ub20@ub20-VM:~$ env | grep ROS
+ROS_VERSION=1
+ROS_PYTHON_VERSION=3
+ROS_PACKAGE_PATH=/home/ub20/ldlidar_ros_ws/src:/opt/ros/noetic/share
+ROSLISP_PACKAGE_DIRECTORIES=/home/ub20/ldlidar_ros_ws/devel/share/common-lisp
+ROS_IP=10.42.0.1
+ROS_ETC_DIR=/opt/ros/noetic/etc/ros
+ROS_MASTER_URI=http://10.42.0.1:11311
+ROS_ROOT=/opt/ros/noetic/share/ros
+ROS_DISTRO=noetic
+```
+
+Set bridge mode on the WIFI network adapter from host to VM, so it will act as another computer on the `RaspAP` network:
+
+<img src="imgs/bridgeVM.png">
+
+Going back to your VM, check if the IP is somewhere `10.42.0.X`, and ping Raspberry to check if it is reachable:
+
+```shell
+ub20@ub20-VM:~$ ip a | grep inet
+...
+    inet 10.42.0.83/24 brd 10.42.0.255 scope global dynamic noprefixroute enp0s3
+
+ub20@ub20-VM:~$ ping 10.42.0.1
+PING 10.42.0.1 (10.42.0.1) 56(84) bytes of data.
+64 bytes de 10.42.0.1: icmp_seq=1 ttl=64 tempo=21.6 ms
+64 bytes de 10.42.0.1: icmp_seq=2 ttl=64 tempo=10.9 ms
+...
+```
+
+Now we are good to go, 1st check the Raspberry data transmission and vizualize some raw data:
+
+```shell
+ub20@ub20-VM:~$ rostopic list
+/camera/image_raw
+...
+ub20@ub20-VM:~$ rostopic echo /camera/image_raw
+...
+53, 160, 161, 154, 161, 162, 154, 158, 160, 155, 159, 161, 154, 158, 160, 153, 157, 159, 151, 161, 160, 152, 162, 161, 156, 163, 163, 154, 161, 161, 154, 161, 162, 156, 163, 164, 156, 160, 162, 156, 160, 162, 155, 162, 162, 153, 160, 160, 154, 161, 161, 154, 161, 161, 156, 161, 161, 156, 161, 161, 158, 163, 163, 159, 164, 164, 157, 163, 161, 157, 163, 161, 156, 161, 161, 156, 161, 161, 153, 160, 160, 152, 159, 159, 152, 159, 159, 152, 159, 159]
+---
+```
+
+Press Ctrl+c to stop the message. 2nd vizualize some data:
+
+```shell
+ub20@ub20-VM:~$ rqt_image_view
+```
+
+<img src="imgs\CameraPublisher.png">
+
+## <a name="section-6"></a> 6. Cameras calibration
 
 The theory can be found at [Simple stereo model and camera calibration process](Theory-SimpleStereo.ipynb). Here we present the camera intrinsinc parameters of each one used:
 
