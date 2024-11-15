@@ -7,7 +7,7 @@ Learning steps for LiDAR usage and its possibilities in conjunction with another
 
 * [1. Cameras arrangement and setup](#section-1)
 * [2. Take pictures by command line](#section-2)
-* [3. Cheap cameras specs](#section-3)
+* [3. Get cameras specs](#section-3)
 * [4. ROS publisher for camera](#section-4)
 * [5. ROS subscriber through Virtual Machine](#section-5)
 * [6. Cameras calibration](#section-6)
@@ -262,7 +262,7 @@ ubuntu@ubiquityrobot:~$ ./capture_videos.sh
 
 Here, we stdout only the log of the last device. Check the decrease in nominal fps at the end when all cameras are on and buggy 1 sec files generated at random runs. In general, Raspberry Pi 3B had better generated files when handling only 2 cameras.
 
-## <a name="section-3"></a> 3. Cheap cameras specs
+## <a name="section-3"></a> 3. Get cameras specs
 
 ```shell
 # Check possible controls with:
