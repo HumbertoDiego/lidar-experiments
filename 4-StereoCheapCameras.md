@@ -287,4 +287,10 @@ The theory can be found at [Simple stereo model and camera calibration process](
 | $c_y$  |  426             | 765      | 354               |  404     |
 
 
-
+<!-- 
+git init
+git remote add origin https://github.com/HumbertoDiego/lidar-experiments
+git pull origin main
+#Do changes
+git add * ; git commit -m "update cameras files"; git push -u origin main
+ -->
