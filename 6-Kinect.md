@@ -568,6 +568,51 @@ if __name__ == '__main__':
     listener()
 ```
 
+Save calibration data if needed to use as kinect setup parameters, example:
+
+```shell
+# image crop rectangle: x1,y1 and x2,y2 
+ub20@ub20-VM:~$ echo "118, 12, 550, 408" > calib.txt 
+```
+
+A subscriber to show cropped data in real time:
+
+```Python
+#!/usr/bin/python3
+import cv2
+import rospy
+import numpy as np
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge, CvBridgeError
+
+bridge = CvBridge()
+inner_box = list(map(int, open("calib.txt").read().split(",")))
+
+def callback(image_msg):
+    global inner_box
+    # Converte a imagem de profundidade para um formato OpenCV (como array NumPy)
+    depth_image = bridge.imgmsg_to_cv2( image_msg, desired_encoding="passthrough")
+    # Corta dentro da areia
+    depth_image_cropped = depth_image[inner_box[0]:inner_box[2],
+                                      inner_box[1]:inner_box[3]]
+
+    depth_image_cropped = np.where(depth_image_cropped == 0, np.nan, depth_image_cropped)
+    
+    cv2.imshow("depth",depth_image_cropped)
+
+    if cv2.waitKey(0) & 0xFF == ord('q'):
+        rospy.signal_shutdown("Closing...")
+
+def listener():
+    rospy.init_node('listener', anonymous=True)
+    rospy.Subscriber("/camera/depth/image_raw", Image, callback)
+    rospy.spin()
+    cv2.destroyAllWindows()
+
+if __name__ == '__main__':
+    listener()
+```
+
 <!-- 
 git init
 git remote add origin https://github.com/HumbertoDiego/lidar-experiments

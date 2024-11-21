@@ -3,11 +3,12 @@ Learning steps for LiDAR usage and its possibilities in conjunction with another
 
 ## Summary
 
-* [1. Lidar 360º - LD14P](1-LD14P.md)
-* [2. Inertial Sensor 9DOF - BNO055](2-BNO055.md)
-* [3. Lidar 360ºx90º - Unitree 4D L1 RM](3-L1RM.md)
-* [4. General Cameras](4-GeneralCameras.md)
-* [6. Kinect](6-Kinect.md)
+* [1. LD14P -> LiDAR 360º](1-LD14P.md)
+* [2. BNO055 -> Inertial Measurement Unit 9DOF](2-BNO055.md)
+* [3. LD14P + BNO055](3-LD14P_BNO055.md)
+* [4. Unitree 4D L1 RM -> LiDAR 360ºx90º + IMU](4-L1RM.md)
+* [5. General Cameras](5-GeneralCameras.md)
+* [6. Kinect v1](6-Kinect.md)
 
 <!-- 
 git init
