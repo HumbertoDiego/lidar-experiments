@@ -6,14 +6,16 @@ Learning steps for LiDAR usage and its possibilities in conjunction with another
 ## Summary
 
 * [1. Kinect 360 (v1) Presentation](#section-1)
-* [2. Software setup](#section-1)
-    * [2.1 Raspberry Access Point](#section-21)
-    * [2.2 Install ROS on Ubuntu Xenial](#section-22)
-    * [2.3 Install ROS freenect package](#section-23)
-* [3. Launch ROS kinetic freenect](#section-3)
-* [4. Run a ROS subscriber through Virtual Machine](#section-4)
-    * [4.1 Run a subscriber](#section-41)
-    * [4.2 Save data to posterior analisys](#section-42)
+* [2. Hardware setup](#section-2)
+* [3. Software setup](#section-3)
+    * [3.1 Raspberry Access Point](#section-31)
+    * [3.2 Install ROS on Ubuntu Xenial](#section-32)
+    * [3.3 Install ROS freenect package](#section-33)
+* [4. Launch ROS kinetic freenect](#section-4)
+* [5. Run a ROS subscriber through Virtual Machine](#section-5)
+    * [5.1 Run a subscriber](#section-51)
+    * [5.2 Save data to posterior analisys](#section-52)
+    * [5.3 Real time contour plot](#section-53)
 
 
 ## <a name="section-1"></a> 1. Kinect 360 (v1) Presentation
@@ -31,9 +33,20 @@ Some rough estimates of the accuracy of the depth sensor:
 - Depth resolution: ~ 1.5 mm at 50 cm. About 5 cm at 5 m.
 - Noise: About +-1 DN at all depths, but DN to depth is non-linear. This means +-1 mm close, and +- 5 cm far
 
-## <a name="section-2"></a> 2. Software setup
+## <a name="section-2"></a> 2. Hardware setup
+
+The original idea is a sand box with a kinect and a projector, both aiming the sand, get Kinect depths whith a computer, paint and contour plot them in real time and project it back into the sand. Original implementation still can be found in [Augmented Reality SandBox](https://github.com/HumbertoDiego/SarndBoxExplorer). 
+
+The new approach differs from original by taking more control of depths and using custom software to process data. Also we use a announcer and subscriber method where raw depth images are send by thea announcer to subscribers wich can be different computers, a small one acting as announcer and a more robust one as a subscriber to process images.
+
+The overall ideia is presented by below image:
+
+<img src="imgs/setup-07.png">
+
+The implementation resulted in:
 
 
+## <a name="section-3"></a> 3. Software setup
 
 Requirements:
 
@@ -43,7 +56,7 @@ Requirements:
 * Power supply 5V - 3A
 * Internet connection plugged in via Ethernet cable (only initial steps)
 
-### <a name="section-21"></a> 2.1 Raspberry Access Point
+### <a name="section-31"></a> 3.1 Raspberry Access Point
 
 On Ubuntu Xenial if you want to receive an static IP address every time you connect at a certain network adapter, you will need to add at the bottom of `/etc/network/interfaces`:
 
@@ -78,16 +91,13 @@ sudo nano /etc/rc.local
     exit 0
 ```
 
-<!-- 
-Optionnaly, use ethernet cable between raspberry and other computer to increase baudrate:
+WARNING:
 
-```shell
-nmcli connection add type ethernet ifname enxb827eb4e360a con-name mycon ipv4.method shared
-sudo nmcli c up mycon
-```
--->
 
-### <a name="section-22"></a> 2.2 Install ROS on Ubuntu Xenial
+- Take care of always shutdown the raspberry correctly or it may restart at emergency mode on the next boot up, not rising the access point, making unavailable remote shell and forcing to plug the monitor and keyboard to troubleshot.
+
+
+### <a name="section-32"></a> 3.2 Install ROS on Ubuntu Xenial
 
 Configure your Ubuntu repositories to allow "restricted," "universe," and "multiverse." 
 
@@ -124,7 +134,7 @@ echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 ```
 
-### <a name="section-23"></a> 2.3 Install ROS freenect package
+### <a name="section-33"></a> 3.3 Install ROS freenect package
 
 This [package](https://wiki.ros.org/freenect_launch) contains launch files for using a Microsoft Kinect using the [libfreenect](https://openkinect.org/wiki/Getting_Started#Ubuntu/Debian) library.
 
@@ -157,7 +167,7 @@ rviz
 
 You should see a very lag 
 
-## <a name="section-3"></a> 3. Launch ROS kinetic freenect
+## <a name="section-4"></a> 4. Launch ROS kinetic freenect
 
 Remember we have setup an access point with our Raspberry? Now it's time. Connect to it:
 
@@ -402,9 +412,9 @@ ubuntu@ubuntu-desktop:~$ rostopic list
 
 We will subscribe to these topics later: `/camera/rgb/image_color` and `/camera/depth/image_raw`.
 
-## <a name="section-4"></a> 4. Run ROS subscriber through Virtual Machine
+## <a name="section-5"></a> 5. Run ROS subscriber through Virtual Machine
 
-An easy way to install updated version of ROS that listen to our annoucer is by a virtual machine. Install Virtual Box. Get an [Ubuntu](https://ubuntu.com/download/desktop) image. Then install ROS Noetic on it.
+An easy way to install updated version of ROS that listen to our announcer is by a virtual machine. Install Virtual Box. Get an [Ubuntu](https://ubuntu.com/download/desktop) image. Then install ROS Noetic on it.
 
 ```shell
 ub20@ub20-VM:~$ sudo wget -c https://raw.githubusercontent.com/qboticslabs/ros_install_noetic/master/ros_install_noetic.sh && chmod +x ./ros_install_noetic.sh && ./ros_install_noetic.sh
@@ -469,7 +479,7 @@ ub20@ub20-VM:~$ rqt_image_view
 
 <img src="imgs/kinectdepth.png">
 
-## <a name="section-41"></a> 4.1 Run a subscriber
+## <a name="section-51"></a> 5.1 Run a subscriber
 
 The depth topic send Image data type messages that has this structure (you can experiment check the authors page for more details):
 
@@ -536,7 +546,7 @@ ub20@ub20-VM:~$ ./subscriber.py
 
 <img src="imgs/kinectsubscriber.png">
 
-## <a name="section-42"></a> 4.2 Save data to posterior analisys
+## <a name="section-52"></a> 5.2 Save data to posterior analisys
 
 A simple subscriber can do this job:
 
@@ -612,6 +622,8 @@ def listener():
 if __name__ == '__main__':
     listener()
 ```
+
+## <a name="section-53"></a> 5.3 Real time contour plot
 
 <!-- 
 git init
