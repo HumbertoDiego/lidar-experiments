@@ -35,16 +35,15 @@ Some rough estimates of the accuracy of the depth sensor:
 
 ## <a name="section-2"></a> 2. Hardware setup
 
-The original idea is a sand box with a kinect and a projector, both aiming the sand, get Kinect depths whith a computer, paint and contour plot them in real time and project it back into the sand. Original implementation still can be found in [Augmented Reality SandBox](https://github.com/HumbertoDiego/SarndBoxExplorer). 
+The original idea is a sand box with a kinect and a projector, both aiming the sand. We get Kinect depths whith a computer, paint and contour plot them in real time and project the plot back into the sand. Original implementation still can be found at [Augmented Reality SandBox](https://github.com/HumbertoDiego/SarndBoxExplorer). 
 
-The new approach differs from original by taking more control of depths and using custom software to process data. Also we use a announcer and subscriber method where raw depth images are send by thea announcer to subscribers wich can be different computers, a small one acting as announcer and a more robust one as a subscriber to process images.
+The new approach differs from the original by taking more control of depths and using custom software to process data. Also, we use an announcer/subscriber method where raw depth images are sent by the announcer to subscribers wich can be different computers, a small one acting as announcer and a more robust one as a subscriber to process images.
 
 The overall ideia is presented by below image:
 
 <img src="imgs/setup-07.png">
 
 The implementation resulted in:
-
 
 ## <a name="section-3"></a> 3. Software setup
 
