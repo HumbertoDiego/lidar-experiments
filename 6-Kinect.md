@@ -35,7 +35,7 @@ Some rough estimates of the accuracy of the depth sensor:
 
 ## <a name="section-2"></a> 2. Hardware setup
 
-The original idea is a sand box with a kinect and a projector, both aiming the sand. We get Kinect depths whith a computer, paint and contour plot them in real time and project the plot back into the sand. Original implementation still can be found at [Augmented Reality SandBox](https://github.com/HumbertoDiego/SarndBoxExplorer). 
+The original idea is a sand box with a kinect and a projector, both aiming the sand. Kinect depths are colorized in real time and projected the plot back into the sand. Original implementation still can be found at [Augmented Reality SandBox](https://web.cs.ucdavis.edu/~okreylos/ResDev/SARndbox/). Summarized install instructions can be found at [SarndBoxExplorer](https://github.com/HumbertoDiego/SarndBoxExplorer).
 
 The new approach differs from the original by taking more control of depths and using custom software to process data. Also, we use an announcer/subscriber method where raw depth images are sent by the announcer to subscribers wich can be different computers, a small one acting as announcer and a more robust one as a subscriber to process images.
 
@@ -135,7 +135,7 @@ source ~/.bashrc
 
 ### <a name="section-33"></a> 3.3 Install ROS freenect package
 
-This [package](https://wiki.ros.org/freenect_launch) contains launch files for using a Microsoft Kinect using the [libfreenect](https://openkinect.org/wiki/Getting_Started#Ubuntu/Debian) library.
+This [package](https://wiki.ros.org/freenect_launch) contains launch files for using a Microsoft Kinect using the [libfreenect](https://github.com/OpenKinect/libfreenect) library.
 
 Starting from Ubuntu 11.10 (Oneiric) and Debian 7 (Wheezy), Ubuntu and Debian provide official packages of libfreenect. You can install them easily in a console:
 
@@ -480,9 +480,13 @@ ub20@ub20-VM:~$ rqt_image_view
 
 ## <a name="section-51"></a> 5.1 Run a subscriber
 
-The depth topic send Image data type messages that has this structure (you can experiment check the authors page for more details):
+The depth topic send Image data type messages that has this structure (you can experiment check the [authors page](https://wiki.ros.org/freenect_camera?distro=melodic) for more details):
 
 ```
+sensor_msgs/Image.msg:
+# This message contains an uncompressed image
+# (0, 0) is at top-left corner of image
+#
 Header header        # Header timestamp should be acquisition time of image
                      # Header frame_id should be optical frame of camera
                      # origin of frame should be optical center of camera
