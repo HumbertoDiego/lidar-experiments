@@ -45,6 +45,8 @@ The overall ideia is presented by below image:
 
 The implementation resulted in:
 
+<img src="imgs/setup-08.jpeg">
+
 ## <a name="section-3"></a> 3. Software setup
 
 Requirements:
