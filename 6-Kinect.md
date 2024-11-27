@@ -13,9 +13,10 @@ Learning steps for LiDAR usage and its possibilities in conjunction with another
     * [3.3 Install ROS freenect package](#section-33)
 * [4. Launch ROS kinetic freenect](#section-4)
 * [5. Run a ROS subscriber through Virtual Machine](#section-5)
-    * [5.1 Run a subscriber](#section-51)
-    * [5.2 Save data to posterior analisys](#section-52)
-    * [5.3 Real time contour plot](#section-53)
+    * [5.1 A subscriber to show data](#section-51)
+    * [5.2 A subscriber to save data](#section-52)
+    * [5.3 A subscriber to crop and show data](#section-53)
+    * [5.4 A subscriber to contour plot data](#section-54)
 
 
 ## <a name="section-1"></a> 1. Kinect 360 (v1) Presentation
@@ -480,7 +481,7 @@ ub20@ub20-VM:~$ rqt_image_view
 
 <img src="imgs/kinectdepth.png">
 
-## <a name="section-51"></a> 5.1 Run a subscriber
+## <a name="section-51"></a> 5.1 A subscriber to show data
 
 The depth topic send Image data type messages that has this structure (you can experiment check the [authors page](https://wiki.ros.org/freenect_camera?distro=melodic) for more details):
 
@@ -551,7 +552,7 @@ ub20@ub20-VM:~$ ./subscriber.py
 
 <img src="imgs/kinectsubscriber.png">
 
-## <a name="section-52"></a> 5.2 Save data to posterior analisys
+## <a name="section-52"></a> 5.2 A subscriber to save data
 
 A simple subscriber can do this job:
 
@@ -590,7 +591,7 @@ Save calibration data if needed to use as kinect setup parameters, example:
 ub20@ub20-VM:~$ echo "118, 12, 550, 408" > calib.txt 
 ```
 
-A subscriber to show cropped data in real time:
+## <a name="section-53"></a> 5.3 A subscriber to crop and show data
 
 ```Python
 #!/usr/bin/python3
@@ -628,7 +629,7 @@ if __name__ == '__main__':
     listener()
 ```
 
-## <a name="section-53"></a> 5.3 Real time contour plot
+## <a name="section-54"></a> 5.4 A subscriber to contour plot data
 
 <!-- 
 git init
