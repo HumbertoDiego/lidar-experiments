@@ -6,11 +6,20 @@ Learning steps for LiDAR usage and its possibilities in conjunction with another
 ## Summary
 
 * [1. Cameras arrangement and setup](#section-1)
-* [2. Take pictures by command line](#section-2)
-* [3. Get cameras specs](#section-3)
-* [4. ROS publisher for camera](#section-4)
-* [5. ROS subscriber through Virtual Machine](#section-5)
-* [6. Cameras calibration](#section-6)
+* [2. Take pictures](#section-2)
+    * [21. ffmpeg](#section-21)
+    * [22. fswebcam](#section-22)
+    * [23. raspistill](#section-23)
+* [3. Video Stream](#section-3)
+    * [31. v4l2rtspserver](#section-31)
+    * [32. raspivid_mjpeg_server](#section-32)
+* [4. More about multi cameras usage](#section-4)
+    * [4.1 Check device path of your cameras](#section-41)
+    * [4.2 Run photo captures in loop](#section-42)
+    * [4.3 Run concurrent video captures](#section-43)
+* [5. ROS publisher for camera](#section-5)
+* [6. ROS subscriber through Virtual Machine](#section-6)
+* [7. Cameras calibration](#section-7)
 
 ## <a name="section-1"></a> 1. Cameras arrangement and setup
 
@@ -78,9 +87,9 @@ Now access remote folder typing `\\10.42.0.1` on the file path bar of the Window
 
 <img src="imgs/Explorer.png">
 
-## <a name="section-2"></a> 2. Take pictures by command line
+## <a name="section-2"></a> 2. Take pictures
 
-### `fswebcam`
+### <a name="section-21"></a> `fswebcam`
 
 ```shell
 ubuntu@ubiquityrobot:~$ sudo apt update && sudo apt install fswebcam
@@ -103,7 +112,7 @@ Notice the `/dev/video0`, you can choose the camera by change the device name wi
 ubuntu@ubiquityrobot:~$ fswebcam --no-banner --device /dev/video0 image0.jpg
 ```
 
-### `ffmeg`
+### <a name="section-22"></a> `ffmeg`
 
 ```shell
 ubuntu@ubiquityrobot:~$ sudo apt update && sudo apt install ffmpeg
@@ -139,7 +148,32 @@ The options are:
 
 Check the relatively steady (desired) 10 fps at 640x480. Trying to increase resolution to 1920x1080 lead to near 3 fps and a lag video. It all depends on the underlying hardware.
 
-### Stream the camera over network with `v4l2rtspserver`
+### <a name="section-23"></a> `raspstill`
+
+For Raspberry Pi cameras only:
+
+```shell
+ubuntu@ubiquityrobot:~$ raspistill -rot 180 -w 1920 -h 1080 -o cam.jpg
+```
+
+- `-rot 180` to rotate the image 180 degrees. Rhe same as `-vf -hf` (vertical flip and hosrinzotal flip)
+- `-w 1920` is the photo width.
+- `-h 1080` is the photo height.
+- `-o cam.jpg` is the output filename.
+
+```shell
+ubuntu@ubiquityrobot:~$ raspistill -rot 180 -w 1920 -h 1080 -tl 1 -t 10 -o cam_%04d.jpg
+```
+
+- `-t`: Time (in ms) before takes picture and shuts down (if not specified, set to 5s)
+- `-tl`: Timelapse mode. Takes a picture every <t>ms. %d == frame number.
+ 
+
+More options with: `raspistill --help`.
+
+## <a name="section-3"></a> Stream video
+
+### <a name="section-31"></a> `v4l2rtspserver`
 
 We will setup here a Real Time Streaming Protocol (RTSP) server for our cameras, let's start by installing the [v4l2rtspserver](https://github.com/mpromonet/v4l2rtspserver), we will have to go back to version 0.2.4 due to compatibility issues with our Ubuntu 20.04:
 
@@ -160,7 +194,7 @@ ubuntu   14704  ...  v4l2rtspserver
 ubuntu@ubiquityrobot:~$ sudo kill 14704
 ```
 
-### Stream the camera over network with `raspivid_mjpeg_server`
+### <a name="section-32"></a> `raspivid_mjpeg_server`
 
 A better way to run a web server for our cameras and with low lattency is [raspivid_mjpeg_server](https://github.com/kig/raspivid_mjpeg_server), install and run the package with:
 
@@ -183,7 +217,9 @@ Listening on http://0.0.0.0:8554
 
 Open [http://10.42.0.1:8554/video.mjpg](http://10.42.0.1:8554/video.mjpg). Kill with Ctrl+c.
 
-### Check device path of your cameras
+## <a name="section-4"></a> 4. More about multi cameras usage
+
+### <a name="section-41"></a> 4.1 Check device path of your cameras
 
 On Linux, every peripheral shows up at `/dev` folder choosed by OS at start up, sometimes they can change if you unplug and plug them back.
 
@@ -218,7 +254,7 @@ ubuntu@ubiquityrobot:~$ v4l2-ctl --list-devices
 
 When you find it, remember these paths. They are useful in programs like `fswebcam`, `ffmpeg` or `opencv` to take photos from a specific camera or all of them.
 
-### Run photo captures in loop
+### <a name="section-42"></a> 4.2 Run photo captures in loop
 
 ```shell
 for device in $(ls /dev | grep video)
@@ -233,7 +269,7 @@ Check the program above. We are saving the photos names with the device path. No
 ubuntu@ubiquityrobot:~$ for device in $(ls /dev | grep video); do fswebcam --no-banner --device /dev/$device raspfotos/image-$device.jpg; done
 ```
 
-### Run video captures in parallel
+### <a name="section-43"></a> 4.3 Run concurrent video captures
 
 Write this code into `capturevideos.sh` file:
 
@@ -262,7 +298,7 @@ ubuntu@ubiquityrobot:~$ ./capture_videos.sh
 
 Here, we stdout only the log of the last device. Check the decrease in nominal fps at the end when all cameras are on and buggy 1 sec files generated at random runs. In general, Raspberry Pi 3B had better generated files when handling only 2 cameras.
 
-## <a name="section-3"></a> 3. Get cameras specs
+## <a name="section-5"></a> 5. Get cameras specs
 
 ```shell
 # Check possible controls with:
@@ -277,7 +313,28 @@ ubuntu@ubiquityrobot:~$ v4l2-ctl --device /dev/video0 -L
 | Image Res       |  2048x1536       |  1920x1080      | 3280 x 2464       | 1920x1080      |
 |Possible controls <br> at capture time|  brightness (int): 1 -255<br> contrast (int): 1 -255<br> saturation (int): 1 -255<br> white_balance_temperature_auto (bool):<br> gain (int): 1 -100<br> power_line_frequency (menu): 0 -2<br> white_balance_temperature (int): 2800 -6500<br> sharpness (int): 1 -255<br> exposure_auto (menu): 0 -3<br> exposure_absolute (int): 5 -2500<br> exposure_auto_priority (bool)| brightness  (int) : 0 -255 <br> contrast  (int) : 0 -255 <br> saturation  (int): 0 -255 <br> hue  (int) : -127 -127 <br>gamma (int) : 1 -8 <br>power_line_frequency  (menu): 0 -2<br>sharpness  (int) : 0 -15 <br>backlight_compensation  (int) : 1 -5  |brightness (int) : 0 -100 <br> contrast (int) : -100 -100<br> saturation (int) : -100 -100 <br> red_balance (int) : 1 -7999 <br> blue_balance (int) : 1 -7999<br> horizontal_flip (bool) : <br> vertical_flip (bool) :<br> power_line_frequency (menu) : 0 -3 <br> sharpness (int) : -100 -100  r<br> color_effects (menu) : 0 -15<br> rotate (int) : 0 -360 <br> color_effects_cbcr (int) : 0 -65535 <br>Codec Controls:<br> video_bitrate_mode (menu): 0 -1 <br> video_bitrate (int): 25000 -25000000 step=25000<br> repeat_sequence_header (bool): <br> h264_i_frame_period (int): 0 -2147483647 <br> h264_level (menu): 0 -11 <br> h264_profile (menu): 0 -4 <br><br>Camera Controls:<br>auto_exposure (menu): 0 -3 <br> exposure_time_absolute (int): 1 -10000<br> exposure_dynamic_framerate (bool): <br> auto_exposure_bias (intmenu): 0 -24 <br> white_balance_auto_preset (menu): 0 -10 <br> image_stabilization (bool): <br> iso_sensitivity (intmenu): 0 -4 <br> iso_sensitivity_auto (menu): 0 -1 <br> exposure_metering_mode (menu): 0 -2 <br> scene_mode (menu): 0 -13 <br><br> JPEG Compression Controls:<br> compression_quality (int): 1 -100 | brightness 0x00980900 (int) : 0 -255 step=1 default=128 value=153<br> contrast (int) : 0 -255<br> saturation (int) : 0 -255<br> hue (int) : 0 -255<br> white_balance_temperature_auto (bool) : <br> gamma (int) : 0 -255<br> gain (int) : 0 -255<br> power_line_frequency (menu) : 0 -2<br> white_balance_temperature (int) : 2800 -6500<br> sharpness (int) : 0 -255<br> backlight_compensation (int) : 0 -2<br> exposure_auto (menu) : 0 -3<br> exposure_absolute (int) : 3 max=2047 |
 
-## <a name="section-4"></a> 4. ROS publisher for camera
+Notice that one of our cameras is a Raspberry Cam 2.1. The published specs are ([source](https://www.raspberrypi.com/documentation/accessories/camera.html)):
+
+|                     |Camera Module v2| 
+| -------------       | -------------    | 
+| Weight              | 3g               | 
+| Still resolution    | 8 MP             | 
+| Video modes         | 1080p47, 1640 × 1232p41 and 640 × 480p206    | 
+| Sensor              |  Sony IMX219     | 
+| Sensor resolution   | 3280 × 2464 pixels    | 
+| Sensor image area   |  3.68 × 2.76 mm (4.6 mm diagonal)    | 
+| Sensor width        |  3.68 mm         | 
+| Pixel size          |  1.12 µm × 1.12 µm    | 
+| Optical size        | 1/4"             | 
+| Focus               | Adjustable       | 
+| Depth of field      | Approx 10 cm to ∞| 
+| Focal length        | 3.04 mm          | 
+| Horizontal Field of View (FoV)   | 62.2 degrees    | 
+| Vertical Field of View (FoV)     | 48.8 degrees    | 
+| Focal ratio (F-Stop)             | F2.0            | 
+| Maximum exposure time (seconds)  | 11.76           | 
+
+## <a name="section-6"></a> 6. ROS publisher for camera
 
 Create a ROS Package dir `~/camera_ws`:
 
@@ -372,7 +429,7 @@ ubuntu@ubiquityrobot:~$ rostopic list
 ...
 ```
 
-## <a name="section-5"></a> 5. ROS subscriber through Virtual Machine
+## <a name="section-7"></a> 7. ROS subscriber through Virtual Machine
 
 An easy way to install updated version of ROS that listen to our publisher is by a virtual machine. Install Virtual Box. Get an [Ubuntu](https://ubuntu.com/download/desktop) image. Then install ROS Noetic on it.
 

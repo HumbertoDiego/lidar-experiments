@@ -7,7 +7,7 @@ Learning steps for LiDAR usage and its possibilities in conjunction with another
 * [2. BNO055 -> Inertial Measurement Unit 9DOF](2-BNO055.md)
 * [3. LD14P + BNO055](3-LD14P_BNO055.md)
 * [4. Unitree 4D L1 RM -> LiDAR 360ºx90º + IMU](4-L1RM.md)
-* [5. General Cameras](5-GeneralCameras.md)
+* [5. Cameras](5-Cameras.md)
 * [6. Kinect v1](6-Kinect.md)
 
 <!-- 
