@@ -162,10 +162,10 @@ ubuntu@ubiquityrobot:~$ raspistill -rot 180 -w 1920 -h 1080 -o cam.jpg
 - `-o cam.jpg` is the output filename.
 
 ```shell
-ubuntu@ubiquityrobot:~$ raspistill -rot 180 -w 1920 -h 1080 -tl 1 -t 10 -o cam_%04d.jpg
+ubuntu@ubiquityrobot:~$ raspistill -tl 1 -t 5000 -o cam_%04d.jpg
 ```
 
-- `-t`: Time (in ms) before takes picture and shuts down (if not specified, set to 5s)
+- `-t`: Time (in ms) before takes picture and shuts down (if not specified, set to 5000ms)
 - `-tl`: Timelapse mode. Takes a picture every <t>ms. %d == frame number.
  
 
@@ -193,7 +193,6 @@ ubuntu@ubiquityrobot:~$  ps -aux | grep v4l2rtspserver
 ubuntu   14704  ...  v4l2rtspserver
 ubuntu@ubiquityrobot:~$ sudo kill 14704
 ```
-
 ### <a name="section-32"></a> `raspivid_mjpeg_server`
 
 A better way to run a web server for our cameras and with low lattency is [raspivid_mjpeg_server](https://github.com/kig/raspivid_mjpeg_server), install and run the package with:
@@ -333,6 +332,23 @@ Notice that one of our cameras is a Raspberry Cam 2.1. The published specs are (
 | Vertical Field of View (FoV)     | 48.8 degrees    | 
 | Focal ratio (F-Stop)             | F2.0            | 
 | Maximum exposure time (seconds)  | 11.76           | 
+
+One can calculate sensor width with this formula:
+
+$S_{width} = SensorResolution_x * PixelSize_x= 3280 * 1.12 \approx 3680 µm = 3.68 mm $
+
+This value can be achieved knowing the Dots Per Inch (`dpi`), using `exiftool` one can extract this information from a photo:
+
+```shell
+ubuntu@ubiquityrobot:~$ exiftool cam1.jpg | grep Resolution
+X Resolution                    : 72
+Y Resolution                    : 72
+Resolution Unit                 : inches
+```
+
+Therefore 72dpi is: 
+
+$ 72 pixels/inch = 72 pixels/0.0254 µm = 2834 pixels/µm \rightarrow 0.00035 µm /pixel $
 
 ## <a name="section-6"></a> 6. ROS publisher for camera
 
